@@ -1848,6 +1848,7 @@ private fun applySubtitleStyles(textView: Xubtitle) {
                     exoSubtitleView.visibility = View.GONE
                     customSubtitleView.visibility = View.VISIBLE
                     val newCues = cueGroup.cues.map { it.text.toString() ?: "" }
+        
                     if (newCues.all { it.isEmpty() }) {
                         customSubtitleView.text = ""
                         activeSubtitles.clear()
@@ -1855,20 +1856,24 @@ private fun applySubtitleStyles(textView: Xubtitle) {
                         lastPosition = 0
                         return
                     }
+        
                     val currentPosition = exoPlayer.currentPosition
-                    if (lastPosition != 0L && currentPosition - lastPosition > 1500) {
+        
+                    if ((lastSubtitle != null && lastSubtitle!!.length < 10) || (lastPosition != 0L && currentPosition - lastPosition > 1500)) {
                         activeSubtitles.clear()
                     }
+        
                     newCues.forEach { newCue ->
                         if (newCue != lastSubtitle) {
                             activeSubtitles.add(0, newCue)
                             if (activeSubtitles.size > 2) {
-                                activeSubtitles.removeAt(activeSubtitles.size -1)
+                                activeSubtitles.removeAt(activeSubtitles.size - 1)
                             }
                             lastSubtitle = newCue
                             lastPosition = currentPosition
                         }
                     }
+        
                     customSubtitleView.text = activeSubtitles.joinToString("\n")
                 } else {
                     customSubtitleView.text = ""
