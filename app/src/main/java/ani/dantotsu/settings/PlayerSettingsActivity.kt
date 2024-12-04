@@ -523,6 +523,14 @@ class PlayerSettingsActivity : AppCompatActivity() {
             }
         })
 
+        binding.videoSubBottomMargin.value = PrefManager.getVal(PrefName.SubBottomMargin)
+        binding.videoSubBottomMargin.addOnChangeListener(OnChangeListener { _, value, fromUser ->
+            if (fromUser) {
+                PrefManager.setVal(PrefName.SubBottomMargin, value)
+                updateSubPreview()
+            }
+        })
+
 
         val fonts = arrayOf(
             "Poppins Semi Bold",

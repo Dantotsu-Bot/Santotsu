@@ -521,12 +521,20 @@ private fun applySubtitleStyles(textView: Xubtitle) {
               else -> applyOutline(secondaryColor, subStroke)
           }
        }
-    // Apply transparency if subtitles are enabled
+
     textView.alpha =
         when (PrefManager.getVal<Boolean>(PrefName.Subtitles)) {
             true -> PrefManager.getVal(PrefName.SubAlpha)
             false -> 0f
         }
+
+    val marginInDp = PrefManager.getVal<Float>(PrefName.SubStroke)
+    val marginInPx = (marginInDp * resources.displayMetrics.density).toInt()
+
+    val layoutParams = textView.layoutParams as ViewGroup.MarginLayoutParams
+    layoutParams.bottomMargin = marginInPx
+    textView.layoutParams = layoutParams
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
