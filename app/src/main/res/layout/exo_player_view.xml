@@ -60,7 +60,6 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal|bottom"
     android:adjustViewBounds="true"
-    android:layout_weight="1"
     android:visibility="gone"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
