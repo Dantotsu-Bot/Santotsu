@@ -527,7 +527,7 @@ private fun applySubtitleStyles(textView: Xubtitle) {
         }
 
       val textElevation= PrefManager.getVal<Float>(PrefName.SubBottomMargin) * resources.displayMetrics.density
-      textView.translationY = textElevation
+      textView.translationY = -textElevation
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
