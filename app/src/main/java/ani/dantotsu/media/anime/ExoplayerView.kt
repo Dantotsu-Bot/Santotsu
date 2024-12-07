@@ -12,6 +12,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.Animatable
 import android.graphics.LinearGradient
@@ -528,13 +529,8 @@ private fun applySubtitleStyles(textView: Xubtitle) {
             false -> 0f
         }
 
-    val marginInDp = PrefManager.getVal<Float>(PrefName.SubStroke)
-    val marginInPx = (marginInDp * resources.displayMetrics.density).toInt()
-
-    val layoutParams = textView.layoutParams as ViewGroup.MarginLayoutParams
-    layoutParams.bottomMargin = marginInPx
-    textView.layoutParams = layoutParams
-
+      val textElevation= PrefManager.getVal<Float>(PrefName.SubStroke) * resources.displayMetrics.density
+      textView.translationY = textElevation
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
