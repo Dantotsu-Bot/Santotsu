@@ -441,7 +441,6 @@ private fun setupSubFormatting(playerView: PlayerView) {
 }
 
 private fun applySubtitleStyles(textView: Xubtitle) {
-    // Set the primary color based on user preferences
     val primaryColor = when (PrefManager.getVal<Int>(PrefName.PrimaryColor)) {
         0 -> Color.BLACK
         1 -> Color.DKGRAY
@@ -458,7 +457,6 @@ private fun applySubtitleStyles(textView: Xubtitle) {
         else -> Color.WHITE
     }
 
-    // Set the background color based on user preferences
     val subBackground = when (PrefManager.getVal<Int>(PrefName.SubBackground)) {
         0 -> Color.TRANSPARENT
         1 -> Color.BLACK
@@ -475,7 +473,6 @@ private fun applySubtitleStyles(textView: Xubtitle) {
         else -> Color.TRANSPARENT
     }
 
-    // Set the font based on user preferences
     val font = when (PrefManager.getVal<Int>(PrefName.Font)) {
         0 -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
         1 -> ResourcesCompat.getFont(this, R.font.poppins_bold)
@@ -513,7 +510,7 @@ private fun applySubtitleStyles(textView: Xubtitle) {
 
     val subStroke = PrefManager.getVal<Float>(PrefName.SubStroke)
 
-    customSubtitleView.apply {
+    textView.apply {
           when (PrefManager.getVal<Int>(PrefName.Outline)) {
               0 -> applyOutline(secondaryColor, subStroke)
               1 -> applyShineEffect(secondaryColor)
@@ -529,7 +526,7 @@ private fun applySubtitleStyles(textView: Xubtitle) {
             false -> 0f
         }
 
-      val textElevation= PrefManager.getVal<Float>(PrefName.SubStroke) * resources.displayMetrics.density
+      val textElevation= PrefManager.getVal<Float>(PrefName.SubBottomMargin) * resources.displayMetrics.density
       textView.translationY = textElevation
     }
 
