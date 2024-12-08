@@ -1860,7 +1860,7 @@ private fun applySubtitleStyles(textView: Xubtitle) {
         
                     val currentPosition = exoPlayer.currentPosition
         
-                    if ((lastSubtitle?.length :? 0) < 10 || (lastPosition != 0L && currentPosition - lastPosition > 1500)) {
+                    if ((lastSubtitle?.length ?: 0) < 10 || (lastPosition != 0L && currentPosition - lastPosition > 1500)) {
                         activeSubtitles.clear()
                     }
         
