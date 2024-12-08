@@ -1865,7 +1865,8 @@ private fun applySubtitleStyles(textView: Xubtitle) {
                     }
         
                     newCues.forEach { newCue ->
-                        if (newCue != lastSubtitle) {
+                    val matchedSubs = if (activeSubtitles.isNotEmpty()) activeSubtitles.any {it == newCue} else false
+                        if (!matchedSubs) {
                             activeSubtitles.add(0, newCue)
                             if (activeSubtitles.size > 2) {
                                 activeSubtitles.removeAt(activeSubtitles.size - 1)
