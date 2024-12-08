@@ -1840,7 +1840,7 @@ private fun applySubtitleStyles(textView: Xubtitle) {
         playerView.player = exoPlayer
 
         exoPlayer.addListener(object : Player.Listener {
-            var activeSubtitles = mutableListOf<String>()
+            var activeSubtitles = ArrayDeque<String>(2)
             var lastSubtitle: String? = null
             var lastPosition: Long = 0
         
@@ -1849,8 +1849,8 @@ private fun applySubtitleStyles(textView: Xubtitle) {
                     exoSubtitleView.visibility = View.GONE
                     customSubtitleView.visibility = View.VISIBLE
                     val newCues = cueGroup.cues.map { it.text.toString() ?: "" }
-        
-                    if (newCues.all { it.isEmpty() }) {
+         
+                    if (newCues.isEmpty()) {
                         customSubtitleView.text = ""
                         activeSubtitles.clear()
                         lastSubtitle = null
@@ -1860,22 +1860,21 @@ private fun applySubtitleStyles(textView: Xubtitle) {
         
                     val currentPosition = exoPlayer.currentPosition
         
-                    if ((lastSubtitle != null && lastSubtitle!!.length < 10) || (lastPosition != 0L && currentPosition - lastPosition > 1500)) {
+                    if ((lastSubtitle?.length :? 0) < 10 || (lastPosition != 0L && currentPosition - lastPosition > 1500)) {
                         activeSubtitles.clear()
                     }
         
-                    newCues.forEach { newCue ->
-                    val matchedSubs = if (activeSubtitles.isNotEmpty()) activeSubtitles.any {it == newCue} else false
-                        if (!matchedSubs) {
-                            activeSubtitles.add(0, newCue)
-                            if (activeSubtitles.size > 2) {
-                                activeSubtitles.removeAt(activeSubtitles.size - 1)
-                            }
-                            lastSubtitle = newCue
-                            lastPosition = currentPosition
-                        }
-                    }
-        
+                   for (newCue in newCues) {
+                      if (newCue !in activeSubtitles) {
+                          if (activeSubtitles.size >= 2) {
+                              activeSubtitles.removeLast()
+                          }
+                          activeSubtitles.addFirst(newCue)
+                          lastSubtitle = newCue
+                          lastPosition = currentPosition
+                      }
+                  }
+
                     customSubtitleView.text = activeSubtitles.joinToString("\n")
                 } else {
                     customSubtitleView.text = ""
