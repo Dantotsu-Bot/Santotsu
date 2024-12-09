@@ -428,7 +428,7 @@
                     android:layout_marginHorizontal="32dp"
                     android:valueFrom="0"
                     android:stepSize="1.0"
-                    android:valueTo="20">
+                    android:valueTo="30">
 
                 </com.google.android.material.slider.Slider>
 
@@ -457,8 +457,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="32dp"
-                    android:valueFrom="0"
-                    android:stepSize="1"
+                    android:valueFrom="1"
+                    android:stepSize="1.0"
                     android:valueTo="30">
 
                 </com.google.android.material.slider.Slider>
