@@ -323,11 +323,31 @@ class PlayerSettingsActivity : AppCompatActivity() {
             PrefManager.setVal(PrefName.Subtitles, isChecked)
             toggleSubOptions(isChecked)
         }
+        toggleSubOptions(binding.subSwitch.isChecked)
+
+        fun toggleExpSubOptions(isChecked: Boolean) {
+            arrayOf(
+                binding.videoSubStrokeButton,
+                binding.videoSubStroke,
+                binding.videoSubBottomMarginButton,
+                binding.videoSubBottomMargin
+            ).forEach {
+                it.isEnabled = isChecked
+                it.isClickable = isChecked
+                it.alpha = when (isChecked) {
+                    true -> 1f
+                    false -> 0.5f
+                }
+            }
+        }
+
         binding.subTextSwitch.isChecked = PrefManager.getVal(PrefName.TextviewSubtitles)
         binding.subTextSwitch.setOnCheckedChangeListener { _, isChecked ->
             PrefManager.setVal(PrefName.TextviewSubtitles, isChecked)
+            toggleExpSubOptions(isChecked)
         }
-        toggleSubOptions(binding.subSwitch.isChecked)
+        toggleExpSubOptions(binding.subTextSwitch.isChecked)
+
         val subLanguages = arrayOf(
             "Albanian",
             "Arabic",
