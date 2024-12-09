@@ -43,7 +43,7 @@ class Xubtitle @JvmOverloads constructor(
         when (currentEffect) {
             Effect.DROP_SHADOW -> {
                 setLayerType(LAYER_TYPE_SOFTWARE, null)
-                textPaint.setShadowLayer(subStroke, 4f, 4f, effectColor)
+                textPaint.setShadowLayer(outlineThickness, 4f, 4f, effectColor)
             }
             Effect.SHINE -> {
                 val shadowShader = LinearGradient(
