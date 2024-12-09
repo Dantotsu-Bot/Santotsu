@@ -14,7 +14,6 @@ class Xubtitle @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : AppCompatTextView(context, attrs, defStyleAttr) {
 
-    private var outlineStrokeColor: Int = Color.BLACK
     private var outlineThickness: Float = 0f
     private var effectColor: Int = currentTextColor
     private var currentEffect: Effect = Effect.NONE
@@ -29,7 +28,7 @@ class Xubtitle @JvmOverloads constructor(
     init {
         context.theme.obtainStyledAttributes(attrs, R.styleable.Xubtitle, 0, 0).apply {
             try {
-                outlineStrokeColor = getColor(R.styleable.Xubtitle_outlineStrokeColor, Color.BLACK)
+                effectColor = getColor(R.styleable.Xubtitle_outlineStrokeColor, Color.BLACK)
                 outlineThickness = getDimension(R.styleable.Xubtitle_outlineThickness, 4f)
             } finally {
                 recycle()
@@ -41,15 +40,12 @@ class Xubtitle @JvmOverloads constructor(
         val text = text.toString()
         val textPaint = paint
 
-        // Configure effect before drawing
         when (currentEffect) {
             Effect.DROP_SHADOW -> {
                 setLayerType(LAYER_TYPE_SOFTWARE, null)
-                // Apply a regular shadow (no gradient here)
-                textPaint.setShadowLayer(8f, 4f, 4f, effectColor)
+                textPaint.setShadowLayer(subStroke, 4f, 4f, effectColor)
             }
             Effect.SHINE -> {
-                // Create a gradient for the shadow under the text (shine effect)
                 val shadowShader = LinearGradient(
                     0f, 0f, width.toFloat(), height.toFloat(),
                     intArrayOf(Color.WHITE, effectColor, Color.BLACK),
@@ -57,7 +53,6 @@ class Xubtitle @JvmOverloads constructor(
                     Shader.TileMode.CLAMP
                 )
 
-                // Create a paint for the shadow with the gradient shader
                 val shadowPaint = Paint().apply {
                     isAntiAlias = true
                     style = Paint.Style.FILL
@@ -66,15 +61,13 @@ class Xubtitle @JvmOverloads constructor(
                     shader = shadowShader
                 }
 
-                // Draw the shadow manually with an offset
                 canvas.drawText(
                     text,
-                    x + 4f,  // Shadow offset X (adjust as needed)
-                    y + 4f,  // Shadow offset Y (adjust as needed)
+                    x + 4f,  // Shadow offset
+                    y + 4f,
                     shadowPaint
                 )
 
-                // Apply the shine gradient to the text
                 val shader = LinearGradient(
                     0f, 0f, width.toFloat(), height.toFloat(),
                     intArrayOf(effectColor, Color.WHITE, Color.WHITE),
@@ -84,11 +77,10 @@ class Xubtitle @JvmOverloads constructor(
                 textPaint.shader = shader
             }
             else -> {
-                textPaint.shader = null // Reset shader for other effects
+                textPaint.shader = null
             }
         }
 
-        // Create StaticLayout for line breaks and proper text alignment
         val staticLayout = StaticLayout.Builder.obtain(text, 0, text.length, textPaint, width)
             .setAlignment(Layout.Alignment.ALIGN_CENTER)
             .setLineSpacing(0f, 1f)
@@ -96,45 +88,40 @@ class Xubtitle @JvmOverloads constructor(
 
         canvas.save()
 
-        // Draw outline if it's the current effect
         if (currentEffect == Effect.OUTLINE) {
             textPaint.style = Paint.Style.STROKE
             textPaint.strokeWidth = outlineThickness
-            textPaint.color = outlineStrokeColor
+            textPaint.color = effectColor
             staticLayout.draw(canvas)
         }
 
-        // Draw filled text with any active effect
         textPaint.style = Paint.Style.FILL
         textPaint.color = currentTextColor
         staticLayout.draw(canvas)
 
         canvas.restore()
 
-        // Reset paint properties after drawing
         textPaint.shader = null
         if (currentEffect == Effect.DROP_SHADOW) {
             textPaint.clearShadowLayer()
         }
     }
 
-    // Apply outline effect with color and thickness
-    fun applyOutline(outlineStrokeColor: Int, outlineThickness: Float) {
-        this.outlineStrokeColor = outlineStrokeColor
+    fun applyOutline(color: Int, outlineThickness: Float) {
+        this.effectColor = color
         this.outlineThickness = outlineThickness
         currentEffect = Effect.OUTLINE
     }
 
-    // Apply shine effect with custom gradient colors
+    // Too hard for me to figure it out
     fun applyShineEffect(color: Int) {
         this.effectColor = color
         currentEffect = Effect.SHINE
     }
 
-    // Apply drop shadow with custom shadow color
-    fun applyDropShadow(color: Int, subStroke: Float) {
+    fun applyDropShadow(color: Int, outlineThickness: Float) {
         this.effectColor = color
-        paint.setShadowLayer(subStroke, 4f, 4f, color)
+        this.outlineThickness = outlineThickness
         currentEffect = Effect.DROP_SHADOW
     }
 }
