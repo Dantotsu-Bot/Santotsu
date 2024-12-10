@@ -334,201 +334,201 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
         }
     }
 
-private fun setupSubFormatting(playerView: PlayerView) {
-    val primaryColor = when (PrefManager.getVal<Int>(PrefName.PrimaryColor)) {
-        0 -> Color.BLACK
-        1 -> Color.DKGRAY
-        2 -> Color.GRAY
-        3 -> Color.LTGRAY
-        4 -> Color.WHITE
-        5 -> Color.RED
-        6 -> Color.YELLOW
-        7 -> Color.GREEN
-        8 -> Color.CYAN
-        9 -> Color.BLUE
-        10 -> Color.MAGENTA
-        11 -> Color.TRANSPARENT
-        else -> Color.WHITE
-    }
-    val secondaryColor = when (PrefManager.getVal<Int>(PrefName.SecondaryColor)) {
-        0 -> Color.BLACK
-        1 -> Color.DKGRAY
-        2 -> Color.GRAY
-        3 -> Color.LTGRAY
-        4 -> Color.WHITE
-        5 -> Color.RED
-        6 -> Color.YELLOW
-        7 -> Color.GREEN
-        8 -> Color.CYAN
-        9 -> Color.BLUE
-        10 -> Color.MAGENTA
-        11 -> Color.TRANSPARENT
-        else -> Color.BLACK
-    }
-    val outline = when (PrefManager.getVal<Int>(PrefName.Outline)) {
-        0 -> EDGE_TYPE_OUTLINE // Normal
-        1 -> EDGE_TYPE_DEPRESSED // Shine
-        2 -> EDGE_TYPE_DROP_SHADOW // Drop shadow
-        3 -> EDGE_TYPE_NONE // No outline
-        else -> EDGE_TYPE_OUTLINE // Normal
-    }
-    val subBackground = when (PrefManager.getVal<Int>(PrefName.SubBackground)) {
-        0 -> Color.TRANSPARENT
-        1 -> Color.BLACK
-        2 -> Color.DKGRAY
-        3 -> Color.GRAY
-        4 -> Color.LTGRAY
-        5 -> Color.WHITE
-        6 -> Color.RED
-        7 -> Color.YELLOW
-        8 -> Color.GREEN
-        9 -> Color.CYAN
-        10 -> Color.BLUE
-        11 -> Color.MAGENTA
-        else -> Color.TRANSPARENT
-    }
-    val subWindow = when (PrefManager.getVal<Int>(PrefName.SubWindow)) {
-        0 -> Color.TRANSPARENT
-        1 -> Color.BLACK
-        2 -> Color.DKGRAY
-        3 -> Color.GRAY
-        4 -> Color.LTGRAY
-        5 -> Color.WHITE
-        6 -> Color.RED
-        7 -> Color.YELLOW
-        8 -> Color.GREEN
-        9 -> Color.CYAN
-        10 -> Color.BLUE
-        11 -> Color.MAGENTA
-        else -> Color.TRANSPARENT
-    }
-    val font = when (PrefManager.getVal<Int>(PrefName.Font)) {
-        0 -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
-        1 -> ResourcesCompat.getFont(this, R.font.poppins_bold)
-        2 -> ResourcesCompat.getFont(this, R.font.poppins)
-        3 -> ResourcesCompat.getFont(this, R.font.poppins_thin)
-        4 -> ResourcesCompat.getFont(this, R.font.century_gothic_regular)
-        5 -> ResourcesCompat.getFont(this, R.font.levenim_mt_bold)
-        6 -> ResourcesCompat.getFont(this, R.font.blocky)
-        else -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
-    }
-    val fontSize = PrefManager.getVal<Int>(PrefName.FontSize).toFloat()
-
-    playerView.subtitleView?.let { subtitles ->
-        subtitles.setApplyEmbeddedStyles(false)
-        subtitles.setApplyEmbeddedFontSizes(false)
-        subtitles.setBottomPaddingFraction(.1F)
-
-        subtitles.setStyle(
-            CaptionStyleCompat(
-                primaryColor,
-                subBackground,
-                subWindow,
-                outline,
-                secondaryColor,
-                font
-            )
-        )
-
-        subtitles.alpha =
-             when (PrefManager.getVal<Boolean>(PrefName.Subtitles)) {
-                 true -> PrefManager.getVal(PrefName.SubAlpha)
-                 false -> 0f
-            }
-
-        subtitles.setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
-    }
-}
-
-private fun applySubtitleStyles(textView: Xubtitle) {
-    val primaryColor = when (PrefManager.getVal<Int>(PrefName.PrimaryColor)) {
-        0 -> Color.BLACK
-        1 -> Color.DKGRAY
-        2 -> Color.GRAY
-        3 -> Color.LTGRAY
-        4 -> Color.WHITE
-        5 -> Color.RED
-        6 -> Color.YELLOW
-        7 -> Color.GREEN
-        8 -> Color.CYAN
-        9 -> Color.BLUE
-        10 -> Color.MAGENTA
-        11 -> Color.TRANSPARENT
-        else -> Color.WHITE
-    }
-
-    val subBackground = when (PrefManager.getVal<Int>(PrefName.SubBackground)) {
-        0 -> Color.TRANSPARENT
-        1 -> Color.BLACK
-        2 -> Color.DKGRAY
-        3 -> Color.GRAY
-        4 -> Color.LTGRAY
-        5 -> Color.WHITE
-        6 -> Color.RED
-        7 -> Color.YELLOW
-        8 -> Color.GREEN
-        9 -> Color.CYAN
-        10 -> Color.BLUE
-        11 -> Color.MAGENTA
-        else -> Color.TRANSPARENT
-    }
-
-    val font = when (PrefManager.getVal<Int>(PrefName.Font)) {
-        0 -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
-        1 -> ResourcesCompat.getFont(this, R.font.poppins_bold)
-        2 -> ResourcesCompat.getFont(this, R.font.poppins)
-        3 -> ResourcesCompat.getFont(this, R.font.poppins_thin)
-        4 -> ResourcesCompat.getFont(this, R.font.century_gothic_regular)
-        5 -> ResourcesCompat.getFont(this, R.font.levenim_mt_bold)
-        6 -> ResourcesCompat.getFont(this, R.font.blocky)
-        else -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
-    }
-
-    val fontSize = PrefManager.getVal<Int>(PrefName.FontSize).toFloat()
-
-    textView.setBackgroundColor(subBackground)
-    textView.setTextColor(primaryColor)
-    textView.typeface = font
-    textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
-
-
-    val secondaryColor = when (PrefManager.getVal<Int>(PrefName.SecondaryColor)) {
-        0 -> Color.BLACK
-        1 -> Color.DKGRAY
-        2 -> Color.GRAY
-        3 -> Color.LTGRAY
-        4 -> Color.WHITE
-        5 -> Color.RED
-        6 -> Color.YELLOW
-        7 -> Color.GREEN
-        8 -> Color.CYAN
-        9 -> Color.BLUE
-        10 -> Color.MAGENTA
-        11 -> Color.TRANSPARENT
-        else -> Color.BLACK
-    }
-
-    val subStroke = PrefManager.getVal<Float>(PrefName.SubStroke)
-
-    textView.apply {
-          when (PrefManager.getVal<Int>(PrefName.Outline)) {
-              0 -> applyOutline(secondaryColor, subStroke)
-              1 -> applyShineEffect(secondaryColor)
-              2 -> applyDropShadow(secondaryColor, subStroke)
-              3 -> {}
-              else -> applyOutline(secondaryColor, subStroke)
-          }
-       }
-
-    textView.alpha =
-        when (PrefManager.getVal<Boolean>(PrefName.Subtitles)) {
-            true -> PrefManager.getVal(PrefName.SubAlpha)
-            false -> 0f
+    private fun setupSubFormatting(playerView: PlayerView) {
+        val primaryColor = when (PrefManager.getVal<Int>(PrefName.PrimaryColor)) {
+            0 -> Color.BLACK
+            1 -> Color.DKGRAY
+            2 -> Color.GRAY
+            3 -> Color.LTGRAY
+            4 -> Color.WHITE
+            5 -> Color.RED
+            6 -> Color.YELLOW
+            7 -> Color.GREEN
+            8 -> Color.CYAN
+            9 -> Color.BLUE
+            10 -> Color.MAGENTA
+            11 -> Color.TRANSPARENT
+            else -> Color.WHITE
         }
-
-      val textElevation = PrefManager.getVal<Float>(PrefName.SubBottomMargin) / 30 * resources.displayMetrics.heightPixels
-      textView.translationY = -textElevation
-}
+        val secondaryColor = when (PrefManager.getVal<Int>(PrefName.SecondaryColor)) {
+            0 -> Color.BLACK
+            1 -> Color.DKGRAY
+            2 -> Color.GRAY
+            3 -> Color.LTGRAY
+            4 -> Color.WHITE
+            5 -> Color.RED
+            6 -> Color.YELLOW
+            7 -> Color.GREEN
+            8 -> Color.CYAN
+            9 -> Color.BLUE
+            10 -> Color.MAGENTA
+            11 -> Color.TRANSPARENT
+            else -> Color.BLACK
+        }
+        val outline = when (PrefManager.getVal<Int>(PrefName.Outline)) {
+            0 -> EDGE_TYPE_OUTLINE // Normal
+            1 -> EDGE_TYPE_DEPRESSED // Shine
+            2 -> EDGE_TYPE_DROP_SHADOW // Drop shadow
+            3 -> EDGE_TYPE_NONE // No outline
+            else -> EDGE_TYPE_OUTLINE // Normal
+        }
+        val subBackground = when (PrefManager.getVal<Int>(PrefName.SubBackground)) {
+            0 -> Color.TRANSPARENT
+            1 -> Color.BLACK
+            2 -> Color.DKGRAY
+            3 -> Color.GRAY
+            4 -> Color.LTGRAY
+            5 -> Color.WHITE
+            6 -> Color.RED
+            7 -> Color.YELLOW
+            8 -> Color.GREEN
+            9 -> Color.CYAN
+            10 -> Color.BLUE
+            11 -> Color.MAGENTA
+            else -> Color.TRANSPARENT
+        }
+        val subWindow = when (PrefManager.getVal<Int>(PrefName.SubWindow)) {
+            0 -> Color.TRANSPARENT
+            1 -> Color.BLACK
+            2 -> Color.DKGRAY
+            3 -> Color.GRAY
+            4 -> Color.LTGRAY
+            5 -> Color.WHITE
+            6 -> Color.RED
+            7 -> Color.YELLOW
+            8 -> Color.GREEN
+            9 -> Color.CYAN
+            10 -> Color.BLUE
+            11 -> Color.MAGENTA
+            else -> Color.TRANSPARENT
+        }
+        val font = when (PrefManager.getVal<Int>(PrefName.Font)) {
+            0 -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
+            1 -> ResourcesCompat.getFont(this, R.font.poppins_bold)
+            2 -> ResourcesCompat.getFont(this, R.font.poppins)
+            3 -> ResourcesCompat.getFont(this, R.font.poppins_thin)
+            4 -> ResourcesCompat.getFont(this, R.font.century_gothic_regular)
+            5 -> ResourcesCompat.getFont(this, R.font.levenim_mt_bold)
+            6 -> ResourcesCompat.getFont(this, R.font.blocky)
+            else -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
+        }
+        val fontSize = PrefManager.getVal<Int>(PrefName.FontSize).toFloat()
+    
+        playerView.subtitleView?.let { subtitles ->
+            subtitles.setApplyEmbeddedStyles(false)
+            subtitles.setApplyEmbeddedFontSizes(false)
+            subtitles.setBottomPaddingFraction(.1F)
+    
+            subtitles.setStyle(
+                CaptionStyleCompat(
+                    primaryColor,
+                    subBackground,
+                    subWindow,
+                    outline,
+                    secondaryColor,
+                    font
+                )
+            )
+    
+            subtitles.alpha =
+                 when (PrefManager.getVal<Boolean>(PrefName.Subtitles)) {
+                     true -> PrefManager.getVal(PrefName.SubAlpha)
+                     false -> 0f
+                }
+    
+            subtitles.setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
+        }
+    }
+    
+    private fun applySubtitleStyles(textView: Xubtitle) {
+        val primaryColor = when (PrefManager.getVal<Int>(PrefName.PrimaryColor)) {
+            0 -> Color.BLACK
+            1 -> Color.DKGRAY
+            2 -> Color.GRAY
+            3 -> Color.LTGRAY
+            4 -> Color.WHITE
+            5 -> Color.RED
+            6 -> Color.YELLOW
+            7 -> Color.GREEN
+            8 -> Color.CYAN
+            9 -> Color.BLUE
+            10 -> Color.MAGENTA
+            11 -> Color.TRANSPARENT
+            else -> Color.WHITE
+        }
+    
+        val subBackground = when (PrefManager.getVal<Int>(PrefName.SubBackground)) {
+            0 -> Color.TRANSPARENT
+            1 -> Color.BLACK
+            2 -> Color.DKGRAY
+            3 -> Color.GRAY
+            4 -> Color.LTGRAY
+            5 -> Color.WHITE
+            6 -> Color.RED
+            7 -> Color.YELLOW
+            8 -> Color.GREEN
+            9 -> Color.CYAN
+            10 -> Color.BLUE
+            11 -> Color.MAGENTA
+            else -> Color.TRANSPARENT
+        }
+    
+        val font = when (PrefManager.getVal<Int>(PrefName.Font)) {
+            0 -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
+            1 -> ResourcesCompat.getFont(this, R.font.poppins_bold)
+            2 -> ResourcesCompat.getFont(this, R.font.poppins)
+            3 -> ResourcesCompat.getFont(this, R.font.poppins_thin)
+            4 -> ResourcesCompat.getFont(this, R.font.century_gothic_regular)
+            5 -> ResourcesCompat.getFont(this, R.font.levenim_mt_bold)
+            6 -> ResourcesCompat.getFont(this, R.font.blocky)
+            else -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
+        }
+    
+        val fontSize = PrefManager.getVal<Int>(PrefName.FontSize).toFloat()
+    
+        textView.setBackgroundColor(subBackground)
+        textView.setTextColor(primaryColor)
+        textView.typeface = font
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
+    
+    
+        val secondaryColor = when (PrefManager.getVal<Int>(PrefName.SecondaryColor)) {
+            0 -> Color.BLACK
+            1 -> Color.DKGRAY
+            2 -> Color.GRAY
+            3 -> Color.LTGRAY
+            4 -> Color.WHITE
+            5 -> Color.RED
+            6 -> Color.YELLOW
+            7 -> Color.GREEN
+            8 -> Color.CYAN
+            9 -> Color.BLUE
+            10 -> Color.MAGENTA
+            11 -> Color.TRANSPARENT
+            else -> Color.BLACK
+        }
+    
+        val subStroke = PrefManager.getVal<Float>(PrefName.SubStroke)
+    
+        textView.apply {
+              when (PrefManager.getVal<Int>(PrefName.Outline)) {
+                  0 -> applyOutline(secondaryColor, subStroke)
+                  1 -> applyShineEffect(secondaryColor)
+                  2 -> applyDropShadow(secondaryColor, subStroke)
+                  3 -> {}
+                  else -> applyOutline(secondaryColor, subStroke)
+              }
+           }
+    
+        textView.alpha =
+            when (PrefManager.getVal<Boolean>(PrefName.Subtitles)) {
+                true -> PrefManager.getVal(PrefName.SubAlpha)
+                false -> 0f
+            }
+    
+          val textElevation = PrefManager.getVal<Float>(PrefName.SubBottomMargin) / 30 * resources.displayMetrics.heightPixels
+          textView.translationY = -textElevation
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -1860,7 +1860,7 @@ private fun applySubtitleStyles(textView: Xubtitle) {
         
                     val currentPosition = exoPlayer.currentPosition
         
-                    if ((lastSubtitle?.length ?: 0) < 10 || (lastPosition != 0L && currentPosition - lastPosition > 1500)) {
+                    if ((lastSubtitle?.length ?: 0) < 20 || (lastPosition != 0L && currentPosition - lastPosition > 1200)) {
                         activeSubtitles.clear()
                     }
         
