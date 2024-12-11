@@ -31,17 +31,6 @@
             android:scaleType="fitXY"
             tools:ignore="ContentDescription,ImageContrastCheck" />
 
-        <TextView
-            android:id="@id/exo_error_message"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@color/exo_error_message_background_color"
-            android:gravity="center"
-            android:padding="16dp"
-            android:visibility="gone"
-            tools:ignore="PrivateResource" />
-
     </androidx.media3.ui.AspectRatioFrameLayout>
 
     <androidx.media3.ui.SubtitleView
