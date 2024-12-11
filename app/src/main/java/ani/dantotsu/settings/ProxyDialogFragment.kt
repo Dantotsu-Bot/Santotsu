@@ -14,65 +14,66 @@ class ProxyDialogFragment : BottomSheetDialogFragment() {
     private var _binding: BottomSheetProxyBinding? = null
     private val binding get() = _binding!!
 
-    private var proxyHost = PrefManager.getVal<String>(PrefName.Socks5ProxyHost).orEmpty()
-    private var proxyPort = PrefManager.getVal<String>(PrefName.Socks5ProxyPort).orEmpty()
-    private var proxyUsername = PrefManager.getVal<String>(PrefName.Socks5ProxyUsername).orEmpty()
-    private var proxyPassword = PrefManager.getVal<String>(PrefName.Socks5ProxyPassword).orEmpty()
-    private val authEnabled = PrefManager.getVal<Boolean>(PrefName.ProxyAuthEnabled)
-    private val proxyEnabled = PrefManager.getVal<Boolean>(PrefName.EnableSocks5Proxy)
+    private var proxyHost: String? = PrefManager.getVal<String>(PrefName.Socks5ProxyHost).orEmpty()
+    private var proxyPort: String? = PrefManager.getVal<String>(PrefName.Socks5ProxyPort).orEmpty()
+    private var proxyUsername: String? = PrefManager.getVal<String>(PrefName.Socks5ProxyUsername).orEmpty()
+    private var proxyPassword: String? = PrefManager.getVal<String>(PrefName.Socks5ProxyPassword).orEmpty()
+    private var authEnabled: Boolean = PrefManager.getVal<Boolean>(PrefName.ProxyAuthEnabled)
+    private val proxyEnabled: Boolean = PrefManager.getVal<Boolean>(PrefName.EnableSocks5Proxy)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) = BottomSheetProxyBinding.inflate(inflater, container, false).also {
-        _binding = it
-    }.root
+    ): View {
+        _binding = BottomSheetProxyBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(binding) {
-            proxyHost.setText(this@ProxyDialogFragment.proxyHost)
-            proxyPort.setText(this@ProxyDialogFragment.proxyPort)
-            proxyUsername.setText(this@ProxyDialogFragment.proxyUsername)
-            proxyPassword.setText(this@ProxyDialogFragment.proxyPassword)
-            proxyAuthentication.isChecked = authEnabled
-            toggleAuthFields(authEnabled)
+        binding.proxyHost.setText(proxyHost)
+        binding.proxyPort.setText(proxyPort)
+        binding.proxyUsername.setText(proxyUsername)
+        binding.proxyPassword.setText(proxyPassword)
+        binding.proxyAuthentication.isChecked = authEnabled
 
-            proxySave.setOnClickListener {
-                updatePreferences()
-                dismiss()
-                if (proxyEnabled) activity?.restartApp()
-            }
+        toggleAuthentication(authEnabled)
 
-            proxyAuthentication.setOnCheckedChangeListener { _, isChecked ->
-                PrefManager.setVal(PrefName.ProxyAuthEnabled, isChecked)
-                toggleAuthFields(isChecked)
-            }
-        }
-    }
-
-    private fun updatePreferences() {
-        with(binding) {
-            proxyHost = proxyHost.text.toString()
-            proxyPort = proxyPort.text.toString()
-            proxyUsername = proxyUsername.text.toString()
-            proxyPassword = proxyPassword.text.toString()
+        binding.proxySave.setOnClickListener {
+            proxyHost = binding.proxyHost.text.orEmpty().toString()
+            proxyPort = binding.proxyPort.text.orEmpty().toString()
+            proxyUsername = binding.proxyUsername.text.orEmpty().toString()
+            proxyPassword = binding.proxyPassword.text.orEmpty().toString()
 
             PrefManager.setVal(PrefName.Socks5ProxyHost, proxyHost)
             PrefManager.setVal(PrefName.Socks5ProxyPort, proxyPort)
             PrefManager.setVal(PrefName.Socks5ProxyUsername, proxyUsername)
             PrefManager.setVal(PrefName.Socks5ProxyPassword, proxyPassword)
+
+            dismiss()
+            if (proxyEnabled) activity?.restartApp()
+        }
+
+        binding.proxyAuthentication.setOnCheckedChangeListener { _, isChecked ->
+            PrefManager.setVal(PrefName.ProxyAuthEnabled, isChecked)
+            toggleAuthentication(isChecked)
         }
     }
 
-    private fun toggleAuthFields(enabled: Boolean) {
-        with(binding) {
-            proxyUsername.isEnabled = enabled
-            proxyPassword.isEnabled = enabled
-            proxyUsernameLayout.isEnabled = enabled
-            proxyPasswordLayout.isEnabled = enabled
+    private fun toggleAuthentication(isChecked: Boolean) {
+        arrayOf(
+            binding.proxyUsername,
+            binding.proxyPassword,
+            binding.proxyUsernameLayout,
+            binding.proxyPasswordLayout
+        ).forEach {
+            it.isEnabled = isChecked
+            it.alpha = when (isChecked) {
+                true -> 1f
+                false -> 0.5f
+            }
         }
     }
 
