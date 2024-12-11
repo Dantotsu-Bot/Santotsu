@@ -1850,9 +1850,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                     customSubtitleView.visibility = View.VISIBLE
                     val newCues = cueGroup.cues.map { it.text.toString() ?: "" }
          
-                    val cue = cueGroup.cues.mapIndexed { index, cue -> "Cue index: $index, Cue: $cue" }.joinToString("\n")
-                    PrefManager.setVal(PrefName.Socks5ProxyUsername, cue)
-                    
                     if (newCues.isEmpty()) {
                         customSubtitleView.text = ""
                         activeSubtitles.clear()
@@ -1863,7 +1860,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
         
                     val currentPosition = exoPlayer.currentPosition
         
-                    if ((lastSubtitle?.length ?: 0) < 20 || (lastPosition != 0L && currentPosition - lastPosition > 1200)) {
+                    if ((lastSubtitle?.length ?: 0) < 20 || (lastPosition != 0L && currentPosition - lastPosition > 1500)) {
                         activeSubtitles.clear()
                     }
         
