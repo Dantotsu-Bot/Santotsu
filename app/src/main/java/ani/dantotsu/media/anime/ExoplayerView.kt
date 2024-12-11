@@ -1850,13 +1850,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                     customSubtitleView.visibility = View.VISIBLE
                     val newCues = cueGroup.cues.map { it.text.toString() ?: "" }
          
-                    val cue = cueGroup.cues.toString()
-                    val cueStart = cue.startTime.toString()
-                    val cueEnd = cue.endTime.toString()
-                    val cuePosition = cue.position.toString()
-                    
-                    val cueInfo = "Cue: $cue, StartTime: $cueStart, EndTime: $cueEnd, Position: $cuePosition"
-                    
+                    val cue = cueGroup.toString()
                     PrefManager.setVal(PrefName.Socks5ProxyUsername, cueInfo)
                     
                     if (newCues.isEmpty()) {
