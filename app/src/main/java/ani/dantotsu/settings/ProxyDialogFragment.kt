@@ -42,10 +42,10 @@ class ProxyDialogFragment : BottomSheetDialogFragment() {
         toggleAuthentication(authEnabled)
 
         binding.proxySave.setOnClickListener {
-            proxyHost = binding.proxyHost.text.orEmpty().toString()
-            proxyPort = binding.proxyPort.text.orEmpty().toString()
-            proxyUsername = binding.proxyUsername.text.orEmpty().toString()
-            proxyPassword = binding.proxyPassword.text.orEmpty().toString()
+            proxyHost = binding.proxyHost.text?.toString().orEmpty()
+            proxyPort = binding.proxyPort.text?.toString().orEmpty()
+            proxyUsername = binding.proxyUsername.text?.toString().orEmpty()
+            proxyPassword = binding.proxyPassword.text?.toString().orEmpty()
 
             PrefManager.setVal(PrefName.Socks5ProxyHost, proxyHost)
             PrefManager.setVal(PrefName.Socks5ProxyPort, proxyPort)
