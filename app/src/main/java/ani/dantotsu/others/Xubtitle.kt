@@ -17,12 +17,13 @@ class Xubtitle @JvmOverloads constructor(
     private var outlineThickness: Float = 0f
     private var effectColor: Int = currentTextColor
     private var currentEffect: Effect = Effect.NONE
+    
+    private val shadowPaint = Paint().apply { isAntiAlias = true }
+    private val outlinePaint = Paint().apply { isAntiAlias = true }
+    private var shineShader: Shader? = null
 
     enum class Effect {
-        NONE,
-        OUTLINE,
-        SHINE,
-        DROP_SHADOW
+        NONE, OUTLINE, SHINE, DROP_SHADOW
     }
 
     init {
@@ -46,39 +47,24 @@ class Xubtitle @JvmOverloads constructor(
                 textPaint.setShadowLayer(outlineThickness, 4f, 4f, effectColor)
             }
             Effect.SHINE -> {
-                val shadowShader = LinearGradient(
-                    0f, 0f, width.toFloat(), height.toFloat(),
-                    intArrayOf(Color.WHITE, effectColor, Color.BLACK),
-                    null,
-                    Shader.TileMode.CLAMP
-                )
-
-                val shadowPaint = Paint().apply {
-                    isAntiAlias = true
-                    style = Paint.Style.FILL
+                if (shineShader == null) {
+                    shineShader = LinearGradient(
+                        0f, 0f, width.toFloat(), height.toFloat(),
+                        intArrayOf(Color.WHITE, effectColor, Color.BLACK),
+                        null,
+                        Shader.TileMode.CLAMP
+                    )
+                }
+                
+                shadowPaint.apply {
+                    shader = shineShader
                     textSize = textPaint.textSize
                     typeface = textPaint.typeface
-                    shader = shadowShader
                 }
 
-                canvas.drawText(
-                    text,
-                    x + 4f,  // Shadow offset
-                    y + 4f,
-                    shadowPaint
-                )
-
-                val shader = LinearGradient(
-                    0f, 0f, width.toFloat(), height.toFloat(),
-                    intArrayOf(effectColor, Color.WHITE, Color.WHITE),
-                    null,
-                    Shader.TileMode.CLAMP
-                )
-                textPaint.shader = shader
+                canvas.drawText(text, x + 4f, y + 4f, shadowPaint)
             }
-            else -> {
-                textPaint.shader = null
-            }
+            else -> {}
         }
 
         val staticLayout = StaticLayout.Builder.obtain(text, 0, text.length, textPaint, width)
@@ -89,9 +75,12 @@ class Xubtitle @JvmOverloads constructor(
         canvas.save()
 
         if (currentEffect == Effect.OUTLINE) {
-            textPaint.style = Paint.Style.STROKE
-            textPaint.strokeWidth = outlineThickness
-            textPaint.color = effectColor
+            outlinePaint.apply {
+                set(textPaint)
+                style = Paint.Style.STROKE
+                strokeWidth = outlineThickness
+                color = effectColor
+            }
             staticLayout.draw(canvas)
         }
 

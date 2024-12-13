@@ -1884,11 +1884,8 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
             }
         })
 
-        if (PrefManager.getVal<Boolean>(PrefName.TextviewSubtitles)) {
           applySubtitleStyles(customSubtitleView)
-        } else {
           setupSubFormatting(playerView)
-        }
 
         try {
             val rightNow = Calendar.getInstance()
@@ -2179,7 +2176,10 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                 TrackSelectionOverride(trackGroup.mediaTrackGroup, index)
             )
             .build()
-        if (type == TRACK_TYPE_TEXT) setupSubFormatting(playerView)
+        if (type == TRACK_TYPE_TEXT) {
+            setupSubFormatting(playerView)
+            applySubtitleStyles(customSubtitleView)
+        }
         playerView.subtitleView?.alpha = when (isDisabled) {
             false -> PrefManager.getVal(PrefName.SubAlpha)
             true -> 0f
