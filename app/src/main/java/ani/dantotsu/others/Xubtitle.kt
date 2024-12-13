@@ -16,8 +16,9 @@ class Xubtitle
     @JvmOverloads
     constructor(
         context: Context,
+        attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
-    ) : AppCompatTextView(context, defStyleAttr) {
+    ) : AppCompatTextView(context, attrs, defStyleAttr) {
         private var outlineThickness: Float = 0f
         private var effectColor: Int = currentTextColor
         private var currentEffect: Effect = Effect.NONE
