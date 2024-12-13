@@ -319,13 +319,6 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 }
             }
         }
-        binding.subSwitch.isChecked = PrefManager.getVal(PrefName.Subtitles)
-        binding.subSwitch.setOnCheckedChangeListener { _, isChecked ->
-            PrefManager.setVal(PrefName.Subtitles, isChecked)
-            toggleSubOptions(isChecked)
-            toggleExpSubOptions(isChecked)
-        }
-        toggleSubOptions(binding.subSwitch.isChecked)
 
         fun toggleExpSubOptions(isChecked: Boolean) {
             arrayOf(
@@ -342,6 +335,14 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.subSwitch.isChecked = PrefManager.getVal(PrefName.Subtitles)
+        binding.subSwitch.setOnCheckedChangeListener { _, isChecked ->
+            PrefManager.setVal(PrefName.Subtitles, isChecked)
+            toggleSubOptions(isChecked)
+            toggleExpSubOptions(isChecked)
+        }
+        toggleSubOptions(binding.subSwitch.isChecked)
 
         binding.subTextSwitch.isChecked = PrefManager.getVal(PrefName.TextviewSubtitles)
         binding.subTextSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -401,7 +402,7 @@ class PlayerSettingsActivity : AppCompatActivity() {
                     PrefManager.getVal(PrefName.SubLanguage)
                 ) { count ->
                    PrefManager.setVal(PrefName.SubLanguage, count)
-                    dialog.dismiss()
+                   dismiss()
                 }
                 show()
             }
