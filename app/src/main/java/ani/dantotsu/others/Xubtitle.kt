@@ -15,8 +15,10 @@ import ani.dantotsu.R
 class Xubtitle
     @JvmOverloads
     constructor(
-        context: Context
-    ) : AppCompatTextView(context) {
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0,
+    ) : AppCompatTextView(context, attrs, defStyleAttr) {
         private var outlineThickness: Float = 0f
         private var effectColor: Int = currentTextColor
         private var currentEffect: Effect = Effect.NONE
@@ -56,7 +58,10 @@ class Xubtitle
                 }
 
                 Effect.DROP_SHADOW -> {
+                    setLayerType(LAYER_TYPE_SOFTWARE, null)
                     textPaint.setShadowLayer(outlineThickness, 4f, 4f, effectColor)
+                    textPaint.color = currentTextColor
+                    staticLayout.draw(canvas)
                 }
 
                 Effect.SHINE -> {
