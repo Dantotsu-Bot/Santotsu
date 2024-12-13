@@ -48,19 +48,18 @@ class Xubtitle
         override fun onDraw(canvas: Canvas) {
             val text = text.toString()
             val textPaint = paint
+            val staticLayout =
+                StaticLayout.Builder
+                    .obtain(text, 0, text.length, textPaint, width)
+                    .setAlignment(Layout.Alignment.ALIGN_CENTER)
+                    .setLineSpacing(0f, 1f)
+                    .build()
 
             when (currentEffect) {
                 Effect.OUTLINE -> {
                     textPaint.style = Paint.Style.STROKE
                     textPaint.strokeWidth = outlineThickness
                     textPaint.color = effectColor
-
-                    val staticLayout =
-                        StaticLayout.Builder
-                            .obtain(text, 0, text.length, textPaint, width)
-                            .setAlignment(Layout.Alignment.ALIGN_CENTER)
-                            .setLineSpacing(0f, 1f)
-                            .build()
 
                     staticLayout.draw(canvas)
 
@@ -72,13 +71,6 @@ class Xubtitle
                 Effect.DROP_SHADOW -> {
                     setLayerType(LAYER_TYPE_SOFTWARE, null)
                     textPaint.setShadowLayer(outlineThickness, 4f, 4f, effectColor)
-
-                    val staticLayout =
-                        StaticLayout.Builder
-                            .obtain(text, 0, text.length, textPaint, width)
-                            .setAlignment(Layout.Alignment.ALIGN_CENTER)
-                            .setLineSpacing(0f, 1f)
-                            .build()
 
                     staticLayout.draw(canvas)
 
@@ -106,13 +98,6 @@ class Xubtitle
                             shader = shadowShader
                         }
 
-                    val staticLayout =
-                        StaticLayout.Builder
-                            .obtain(text, 0, text.length, textPaint, width)
-                            .setAlignment(Layout.Alignment.ALIGN_CENTER)
-                            .setLineSpacing(0f, 1f)
-                            .build()
-
                     canvas.drawText(
                         text,
                         x + 4f, // Shadow offset
@@ -135,16 +120,7 @@ class Xubtitle
                     textPaint.shader = null
                 }
 
-                Effect.NONE -> {
-                    val staticLayout =
-                        StaticLayout.Builder
-                            .obtain(text, 0, text.length, textPaint, width)
-                            .setAlignment(Layout.Alignment.ALIGN_CENTER)
-                            .setLineSpacing(0f, 1f)
-                            .build()
-
-                    staticLayout.draw(canvas)
-                }
+                Effect.NONE -> super.onDraw(canvas)
             }
         }
 
