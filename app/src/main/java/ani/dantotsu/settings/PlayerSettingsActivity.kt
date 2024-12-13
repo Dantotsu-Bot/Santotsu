@@ -308,10 +308,11 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 binding.videoSubAlpha,
                 binding.videoSubStroke,
                 binding.subtitleFontSizeText,
-                binding.subtitleFontSize
+                binding.subtitleFontSize,
+                binding.videoSubLanguage,
+                binding.subTextSwitch
             ).forEach {
                 it.isEnabled = isChecked
-                it.isClickable = isChecked
                 it.alpha = when (isChecked) {
                     true -> 1f
                     false -> 0.5f
@@ -322,6 +323,7 @@ class PlayerSettingsActivity : AppCompatActivity() {
         binding.subSwitch.setOnCheckedChangeListener { _, isChecked ->
             PrefManager.setVal(PrefName.Subtitles, isChecked)
             toggleSubOptions(isChecked)
+            toggleExpSubOptions(isChecked)
         }
         toggleSubOptions(binding.subSwitch.isChecked)
 
@@ -391,17 +393,18 @@ class PlayerSettingsActivity : AppCompatActivity() {
             "Urdu",
             "Vietnamese",
         )
-        val subLanguageDialog = AlertDialog.Builder(this, R.style.MyPopup)
-            .setTitle(getString(R.string.subtitle_langauge))
         binding.videoSubLanguage.setOnClickListener {
-            val dialog = subLanguageDialog.setSingleChoiceItems(
-                subLanguages,
-                PrefManager.getVal(PrefName.SubLanguage)
-            ) { dialog, count ->
-                PrefManager.setVal(PrefName.SubLanguage, count)
-                dialog.dismiss()
-            }.show()
-            dialog.window?.setDimAmount(0.8f)
+            customAlertDialog().apply {
+                setTitle(getString(R.string.subtitle_langauge))
+                singleChoiceItems(
+                    subLanguages,
+                    PrefManager.getVal(PrefName.SubLanguage)
+                ) { count ->
+                   PrefManager.setVal(PrefName.SubLanguage, count)
+                    dialog.dismiss()
+                }
+                show()
+            }
         }
         val colorsPrimary =
             arrayOf(

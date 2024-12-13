@@ -417,8 +417,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
         playerView.subtitleView?.let { subtitles ->
             subtitles.setApplyEmbeddedStyles(false)
             subtitles.setApplyEmbeddedFontSizes(false)
-            subtitles.setBottomPaddingFraction(.1F)
-    
+
             subtitles.setStyle(
                 CaptionStyleCompat(
                     primaryColor,
@@ -429,17 +428,17 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                     font
                 )
             )
-    
+
             subtitles.alpha =
                  when (PrefManager.getVal<Boolean>(PrefName.Subtitles)) {
                      true -> PrefManager.getVal(PrefName.SubAlpha)
                      false -> 0f
                 }
-    
+
             subtitles.setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
         }
     }
-    
+
     private fun applySubtitleStyles(textView: Xubtitle) {
         val primaryColor = when (PrefManager.getVal<Int>(PrefName.PrimaryColor)) {
             0 -> Color.BLACK
@@ -456,7 +455,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
             11 -> Color.TRANSPARENT
             else -> Color.WHITE
         }
-    
+
         val subBackground = when (PrefManager.getVal<Int>(PrefName.SubBackground)) {
             0 -> Color.TRANSPARENT
             1 -> Color.BLACK
@@ -472,7 +471,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
             11 -> Color.MAGENTA
             else -> Color.TRANSPARENT
         }
-    
+
         val font = when (PrefManager.getVal<Int>(PrefName.Font)) {
             0 -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
             1 -> ResourcesCompat.getFont(this, R.font.poppins_bold)
@@ -483,15 +482,14 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
             6 -> ResourcesCompat.getFont(this, R.font.blocky)
             else -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
         }
-    
+
         val fontSize = PrefManager.getVal<Int>(PrefName.FontSize).toFloat()
-    
+
         textView.setBackgroundColor(subBackground)
         textView.setTextColor(primaryColor)
         textView.typeface = font
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
-    
-    
+
         val secondaryColor = when (PrefManager.getVal<Int>(PrefName.SecondaryColor)) {
             0 -> Color.BLACK
             1 -> Color.DKGRAY
@@ -507,9 +505,9 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
             11 -> Color.TRANSPARENT
             else -> Color.BLACK
         }
-    
+
         val subStroke = PrefManager.getVal<Float>(PrefName.SubStroke)
-    
+
         textView.apply {
               when (PrefManager.getVal<Int>(PrefName.Outline)) {
                   0 -> applyOutline(secondaryColor, subStroke)
@@ -519,13 +517,13 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                   else -> applyOutline(secondaryColor, subStroke)
               }
            }
-    
+
         textView.alpha =
             when (PrefManager.getVal<Boolean>(PrefName.Subtitles)) {
                 true -> PrefManager.getVal(PrefName.SubAlpha)
                 false -> 0f
             }
-    
+
           val textElevation = PrefManager.getVal<Float>(PrefName.SubBottomMargin) / 30 * resources.displayMetrics.heightPixels
           textView.translationY = -textElevation
     }
@@ -1566,11 +1564,11 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
         //Subtitles
         hasExtSubtitles = ext.subtitles.isNotEmpty()
         if (hasExtSubtitles) {
-          exoSubtitle.isVisible = hasExtSubtitles
-          exoSubtitle.setOnClickListener {
-              subClick()
-          }
-      }
+            exoSubtitle.isVisible = hasExtSubtitles
+            exoSubtitle.setOnClickListener {
+                subClick()
+            }
+        }
         val sub: MutableList<MediaItem.SubtitleConfiguration> =
             emptyList<MediaItem.SubtitleConfiguration>().toMutableList()
         ext.subtitles.forEach { subtitle ->
@@ -1793,8 +1791,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
             dialog.window?.setDimAmount(0.8f)
         } else buildExoplayer()
     }
-
-     
 
     private fun buildExoplayer() {
         //Player
