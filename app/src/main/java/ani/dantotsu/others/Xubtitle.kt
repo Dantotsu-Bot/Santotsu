@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.graphics.Shader
 import android.text.Layout
 import android.text.StaticLayout
+import android.text.TextPaint
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 
@@ -36,7 +37,7 @@ class Xubtitle
         override fun onDraw(canvas: Canvas) {
             val text = text.toString()
             val textPaint =
-                Paint(paint).apply {
+                TextPaint(paint).apply {
                     color = currentTextColor
                 }
             val staticLayout =
@@ -68,7 +69,7 @@ class Xubtitle
                 }
 
                 Effect.SHINE -> {
-                    val shineShader =
+                    val shadowShader =
                         LinearGradient(
                             0f,
                             0f,
@@ -78,10 +79,36 @@ class Xubtitle
                             null,
                             Shader.TileMode.CLAMP,
                         )
-                    val shinePaint = Paint(textPaint).apply { shader = shineShader }
-                    canvas.translate(4f, 4f) // Shadow offset
-                    staticLayout.draw(canvas, shinePaint)
-                    canvas.translate(-4f, -4f) // Reset position
+
+                    val shadowPaint =
+                        Paint().apply {
+                            isAntiAlias = true
+                            style = Paint.Style.FILL
+                            textSize = textPaint.textSize
+                            typeface = textPaint.typeface
+                            shader = shadowShader
+                        }
+
+                    canvas.drawText(
+                        text,
+                        x + 4f, // Shadow offset
+                        y + 4f,
+                        shadowPaint,
+                    )
+
+                    val shader =
+                        LinearGradient(
+                            0f,
+                            0f,
+                            width.toFloat(),
+                            height.toFloat(),
+                            intArrayOf(effectColor, Color.WHITE, Color.WHITE),
+                            null,
+                            Shader.TileMode.CLAMP,
+                        )
+                    textPaint.shader = shader
+                    staticLayout.draw(canvas)
+                    textPaint.shader = null
                 }
 
                 Effect.NONE -> {
