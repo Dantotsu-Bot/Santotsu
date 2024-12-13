@@ -111,7 +111,9 @@ class Xubtitle
                     textPaint.shader = null
                 }
 
-                Effect.NONE -> super.onDraw(canvas)
+                Effect.NONE -> {
+                    staticLayout.draw(canvas)
+                }
             }
         }
 
