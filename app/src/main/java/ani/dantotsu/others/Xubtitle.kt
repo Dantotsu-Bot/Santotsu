@@ -15,7 +15,7 @@ import ani.dantotsu.R
 class Xubtitle
     @JvmOverloads
     constructor(
-        context: Context,
+        context: Context
     ) : AppCompatTextView(context) {
         private var outlineThickness: Float = 0f
         private var effectColor: Int = currentTextColor
