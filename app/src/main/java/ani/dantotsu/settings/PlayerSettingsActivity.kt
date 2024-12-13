@@ -402,7 +402,6 @@ class PlayerSettingsActivity : AppCompatActivity() {
                     PrefManager.getVal(PrefName.SubLanguage)
                 ) { count ->
                    PrefManager.setVal(PrefName.SubLanguage, count)
-                   dismiss()
                 }
                 show()
             }
