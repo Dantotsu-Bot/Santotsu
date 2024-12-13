@@ -60,8 +60,12 @@ class Xubtitle
                 Effect.DROP_SHADOW -> {
                     setLayerType(LAYER_TYPE_SOFTWARE, null)
                     textPaint.setShadowLayer(outlineThickness, 4f, 4f, effectColor)
+
                     textPaint.color = currentTextColor
+
                     staticLayout.draw(canvas)
+
+                    textPaint.clearShadowLayer()
                 }
 
                 Effect.SHINE -> {
