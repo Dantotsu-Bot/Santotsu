@@ -34,17 +34,6 @@ class Xubtitle
             DROP_SHADOW,
         }
 
-        init {
-            context.theme.obtainStyledAttributes(attrs, R.styleable.Xubtitle, 0, 0).apply {
-                try {
-                    effectColor = getColor(R.styleable.Xubtitle_outlineStrokeColor, Color.BLACK)
-                    outlineThickness = getDimension(R.styleable.Xubtitle_outlineThickness, 4f)
-                } finally {
-                    recycle()
-                }
-            }
-        }
-
         override fun onDraw(canvas: Canvas) {
             val text = text.toString()
             val textPaint = paint
