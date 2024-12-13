@@ -36,7 +36,7 @@ class Xubtitle
 
         override fun onDraw(canvas: Canvas) {
             val text = text.toString()
-            val textPaint = paint
+            val textPaint = currentTextColor
             val staticLayout =
                 StaticLayout.Builder
                     .obtain(text, 0, text.length, textPaint, width)
@@ -60,8 +60,6 @@ class Xubtitle
                 Effect.DROP_SHADOW -> {
                     setLayerType(LAYER_TYPE_SOFTWARE, null)
                     textPaint.setShadowLayer(outlineThickness, 4f, 4f, effectColor)
-
-                    textPaint.color = currentTextColor
 
                     staticLayout.draw(canvas)
 
