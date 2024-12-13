@@ -15,9 +15,6 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.Animatable
-import android.graphics.LinearGradient
-import android.graphics.Paint
-import android.graphics.Shader
 import android.hardware.SensorManager
 import android.media.AudioManager
 import android.media.AudioManager.AUDIOFOCUS_GAIN
@@ -31,10 +28,6 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings.System
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.CharacterStyle
-import android.text.TextPaint
 import android.util.AttributeSet
 import android.util.Rational
 import android.util.TypedValue
@@ -80,7 +73,6 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.text.Cue
-import androidx.media3.common.Timeline
 import androidx.media3.common.text.CueGroup
 import androidx.media3.common.TrackGroup
 import androidx.media3.common.TrackSelectionOverride
@@ -413,7 +405,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
             else -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
         }
         val fontSize = PrefManager.getVal<Int>(PrefName.FontSize).toFloat()
-    
+
         playerView.subtitleView?.let { subtitles ->
             subtitles.setApplyEmbeddedStyles(false)
             subtitles.setApplyEmbeddedFontSizes(false)
@@ -430,9 +422,9 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
             )
 
             subtitles.alpha =
-                 when (PrefManager.getVal<Boolean>(PrefName.Subtitles)) {
-                     true -> PrefManager.getVal(PrefName.SubAlpha)
-                     false -> 0f
+                when (PrefManager.getVal<Boolean>(PrefName.Subtitles)) {
+                    true -> PrefManager.getVal(PrefName.SubAlpha)
+                    false -> 0f
                 }
 
             subtitles.setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)

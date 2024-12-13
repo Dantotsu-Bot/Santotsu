@@ -328,7 +328,6 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 binding.videoSubBottomMargin
             ).forEach {
                 it.isEnabled = isChecked
-                it.isClickable = isChecked
                 it.alpha = when (isChecked) {
                     true -> 1f
                     false -> 0.5f
@@ -340,7 +339,7 @@ class PlayerSettingsActivity : AppCompatActivity() {
         binding.subSwitch.setOnCheckedChangeListener { _, isChecked ->
             PrefManager.setVal(PrefName.Subtitles, isChecked)
             toggleSubOptions(isChecked)
-            toggleExpSubOptions(isChecked)
+            toggleExpSubOptions(binding.subTextSwitch.isChecked && isChecked)
         }
         toggleSubOptions(binding.subSwitch.isChecked)
 
