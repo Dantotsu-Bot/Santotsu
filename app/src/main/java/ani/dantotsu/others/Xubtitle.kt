@@ -10,7 +10,6 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
-import ani.dantotsu.R
 
 class Xubtitle
     @JvmOverloads
@@ -36,7 +35,10 @@ class Xubtitle
 
         override fun onDraw(canvas: Canvas) {
             val text = text.toString()
-            val textPaint = currentTextColor
+            val textPaint =
+                Paint(paint).apply {
+                    color = currentTextColor
+                }
             val staticLayout =
                 StaticLayout.Builder
                     .obtain(text, 0, text.length, textPaint, width)
@@ -58,7 +60,6 @@ class Xubtitle
                 }
 
                 Effect.DROP_SHADOW -> {
-                    setLayerType(LAYER_TYPE_SOFTWARE, null)
                     textPaint.setShadowLayer(outlineThickness, 4f, 4f, effectColor)
 
                     staticLayout.draw(canvas)
@@ -67,7 +68,7 @@ class Xubtitle
                 }
 
                 Effect.SHINE -> {
-                    val shadowShader =
+                    val shineShader =
                         LinearGradient(
                             0f,
                             0f,
@@ -77,36 +78,10 @@ class Xubtitle
                             null,
                             Shader.TileMode.CLAMP,
                         )
-
-                    val shadowPaint =
-                        Paint().apply {
-                            isAntiAlias = true
-                            style = Paint.Style.FILL
-                            textSize = textPaint.textSize
-                            typeface = textPaint.typeface
-                            shader = shadowShader
-                        }
-
-                    canvas.drawText(
-                        text,
-                        x + 4f, // Shadow offset
-                        y + 4f,
-                        shadowPaint,
-                    )
-
-                    val shader =
-                        LinearGradient(
-                            0f,
-                            0f,
-                            width.toFloat(),
-                            height.toFloat(),
-                            intArrayOf(effectColor, Color.WHITE, Color.WHITE),
-                            null,
-                            Shader.TileMode.CLAMP,
-                        )
-                    textPaint.shader = shader
-                    staticLayout.draw(canvas)
-                    textPaint.shader = null
+                    val shinePaint = Paint(textPaint).apply { shader = shineShader }
+                    canvas.translate(4f, 4f) // Shadow offset
+                    staticLayout.draw(canvas, shinePaint)
+                    canvas.translate(-4f, -4f) // Reset position
                 }
 
                 Effect.NONE -> {
