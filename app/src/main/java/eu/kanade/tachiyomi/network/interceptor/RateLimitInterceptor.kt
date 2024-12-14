@@ -67,7 +67,7 @@ internal class RateLimitInterceptor(
                     val periodStart = SystemClock.elapsedRealtime() - rateLimitMillis
                     var hasRemovedExpired = false
                     while (requestQueue.isEmpty().not() && requestQueue.first <= periodStart) {
-                        requestQueue.removeAt(0)
+                        requestQueue.removeFirst()
                         hasRemovedExpired = true
                     }
                     if (call.isCanceled()) {
