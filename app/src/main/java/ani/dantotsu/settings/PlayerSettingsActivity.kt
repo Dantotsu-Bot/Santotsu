@@ -33,7 +33,7 @@ import ani.dantotsu.util.customAlertDialog
 import com.google.android.material.slider.Slider.OnChangeListener
 import kotlin.math.roundToInt
 import eltos.simpledialogfragment.SimpleDialog
-import eltos.simpledialogfragment.color.SimpleColorDialog
+import eltos.simpledialogfragment.color.SimpleColorWheelDialog
 
 class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultListener {
     lateinit var binding: ActivityPlayerSettingsBinding
@@ -604,24 +604,14 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
     }
 
     private fun getColor(originalColor: Int): Int? {
-        class CustomColorDialog : SimpleColorWheelDialog() {
-            override fun onPositiveButtonClick() {
-                super.onPositiveButtonClick()
-            }
-        }
+        SimpleColorWheelDialog.build()
+                      .color(originalColor)
+                      .alpha(false)
+                      .hideHexInput(true)
+                      .show(this, COLOR_DIALOG);
 
-        val tag = "colorPicker"
-        CustomColorDialog()
-            .title("Test")
-            .color(originalColor)
-            .alpha(false)
-            .neg()
-            .show(context, tag)
-
-       if (extras.getInt(SimpleColorWheelDialog.COLOR) != null) {
-       val color = extras.getInt(SimpleColorWheelDialog.COLOR)
-       return color
-       }
+       var color = extras.getInt(SimpleColorWheelDialog.COLOR);
+       return color 
     }
 
     private fun updateSubPreview() {

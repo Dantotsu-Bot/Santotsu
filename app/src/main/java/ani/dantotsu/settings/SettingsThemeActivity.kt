@@ -210,7 +210,7 @@ class SettingsThemeActivity : AppCompatActivity(), SimpleDialog.OnDialogResultLi
 
     fun reload() {
         PrefManager.setCustomVal("reload", true)
-        handler.postDelayed({
+        Handler.postDelayed({
             reloadActivity()
             finishAndRemoveTask()
         }, 100)
