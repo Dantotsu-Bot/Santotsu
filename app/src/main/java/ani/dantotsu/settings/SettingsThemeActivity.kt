@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -209,7 +210,7 @@ class SettingsThemeActivity : AppCompatActivity(), SimpleDialog.OnDialogResultLi
 
     fun reload() {
         PrefManager.setCustomVal("reload", true)
-        postDelayed({
+        handler.postDelayed({
             reloadActivity()
             finishAndRemoveTask()
         }, 100)
