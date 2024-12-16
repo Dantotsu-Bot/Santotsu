@@ -599,7 +599,7 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
             .color(originalColor)
             .alpha(true)
             .neg()
-            .theme(@style/MyPopup)
+            .theme(R.style.MyPopup)
             .show(this, "colorPicker")
     }
 
