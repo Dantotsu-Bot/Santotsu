@@ -40,6 +40,8 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
    interface ColorPickerCallback {
         fun onColorSelected(color: Int)
     }
+    private var colorPickerCallback: ColorPickerCallback? = null
+
     lateinit var binding: ActivityPlayerSettingsBinding
     private val player = "player_settings"
 
@@ -411,60 +413,29 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
                 show()
             }
         }
-        val colorsPrimary =
-            arrayOf(
-                "Black",
-                "Dark Gray",
-                "Gray",
-                "Light Gray",
-                "White",
-                "Red",
-                "Yellow",
-                "Green",
-                "Cyan",
-                "Blue",
-                "Magenta"
-            )
+
         binding.videoSubColorPrimary.setOnClickListener {
-            customAlertDialog().apply {
-                setTitle(getString(R.string.primary_sub_color))
-                singleChoiceItems(
-                    colorsPrimary,
-                    PrefManager.getVal(PrefName.PrimaryColor)
-                ) { count ->
-                    PrefManager.setVal(PrefName.PrimaryColor, count)
-                    updateSubPreview()
-                }
-                show()
-            }
+            val color = PrefManager.getVal<Int>(PrefName.PrimaryColor)
+            val title = getString(R.string.primary_sub_color)
+            showColorPicker(color, title, object: ColorPickerCallback {
+              override fun onColorSelected(color: Int) {
+                  PrefManager.setVal(PrefName.PrimaryColor, color)
+                  updateSubPreview()
+              }
+           })
         }
-        val colorsSecondary = arrayOf(
-            "Black",
-            "Dark Gray",
-            "Gray",
-            "Light Gray",
-            "White",
-            "Red",
-            "Yellow",
-            "Green",
-            "Cyan",
-            "Blue",
-            "Magenta",
-            "Transparent"
-        )
+
         binding.videoSubColorSecondary.setOnClickListener {
-            customAlertDialog().apply {
-                setTitle(getString(R.string.outline_sub_color))
-                singleChoiceItems(
-                    colorsSecondary,
-                    PrefManager.getVal(PrefName.SecondaryColor)
-                ) { count ->
-                    PrefManager.setVal(PrefName.SecondaryColor, count)
-                    updateSubPreview()
-                }
-                show()
-            }
+            val color = PrefManager.getVal<Int>(PrefName.SecondaryColor)
+            val title = getString(R.string.outline_sub_color)
+            showColorPicker(color, title, object: ColorPickerCallback {
+              override fun onColorSelected(color: Int) {
+                  PrefManager.setVal(PrefName.SecondaryColor, color)
+                  updateSubPreview()
+              }
+           })
         }
+
         val typesOutline = arrayOf("Outline", "Shine", "Drop Shadow", "None")
         binding.videoSubOutline.setOnClickListener {
             customAlertDialog().apply {
@@ -479,32 +450,16 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
                 show()
             }
         }
-        val colorsSubBackground = arrayOf(
-            "Transparent",
-            "Black",
-            "Dark Gray",
-            "Gray",
-            "Light Gray",
-            "White",
-            "Red",
-            "Yellow",
-            "Green",
-            "Cyan",
-            "Blue",
-            "Magenta"
-        )
+
         binding.videoSubColorBackground.setOnClickListener {
-            customAlertDialog().apply {
-                setTitle(getString(R.string.sub_background_color_select))
-                singleChoiceItems(
-                    colorsSubBackground,
-                    PrefManager.getVal(PrefName.SubBackground)
-                ) { count ->
-                    PrefManager.setVal(PrefName.SubBackground, count)
-                    updateSubPreview()
-                }
-                show()
-            }
+            val color = PrefManager.getVal<Int>(PrefName.SubBackground)
+            val title = getString(R.string.sub_background_color_select)
+            showColorPicker(color, title, object: ColorPickerCallback {
+              override fun onColorSelected(color: Int) {
+                  PrefManager.setVal(PrefName.SubBackground, color)
+                  updateSubPreview()
+              }
+           })
         }
 
         binding.videoSubColorWindow.setOnClickListener {
@@ -589,9 +544,7 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
         updateSubPreview()
     }
 
-    private var colorPickerCallback: ColorPickerCallback? = null
-
-    fun showColorPicker(originalColor: Int, title: String, callback: ColorPickerCallback) {
+    private fun showColorPicker(originalColor: Int, title: String, callback: ColorPickerCallback) {
         colorPickerCallback = callback
 
         SimpleColorWheelDialog()
@@ -631,40 +584,9 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
                 6 -> ResourcesCompat.getFont(this.context, R.font.blocky)
                 else -> ResourcesCompat.getFont(this.context, R.font.poppins_semi_bold)
             }
-            setTextColor(
-                when (PrefManager.getVal<Int>(PrefName.PrimaryColor)) {
-                    0 -> Color.BLACK
-                    1 -> Color.DKGRAY
-                    2 -> Color.GRAY
-                    3 -> Color.LTGRAY
-                    4 -> Color.WHITE
-                    5 -> Color.RED
-                    6 -> Color.YELLOW
-                    7 -> Color.GREEN
-                    8 -> Color.CYAN
-                    9 -> Color.BLUE
-                    10 -> Color.MAGENTA
-                    11 -> Color.TRANSPARENT
-                    else -> Color.WHITE
-                }
-            )
-            setBackgroundColor(
-                when (PrefManager.getVal<Int>(PrefName.SubBackground)) {
-                    0 -> Color.TRANSPARENT
-                    1 -> Color.BLACK
-                    2 -> Color.DKGRAY
-                    3 -> Color.GRAY
-                    4 -> Color.LTGRAY
-                    5 -> Color.WHITE
-                    6 -> Color.RED
-                    7 -> Color.YELLOW
-                    8 -> Color.GREEN
-                    9 -> Color.CYAN
-                    10 -> Color.BLUE
-                    11 -> Color.MAGENTA
-                    else -> Color.TRANSPARENT
-                }
-            )
+            setTextColor(PrefManager.getVal<Int>(PrefName.PrimaryColor))
+
+            setBackgroundColor(PrefManager.getVal<Int>(PrefName.SubBackground))
         }
     }
 }
