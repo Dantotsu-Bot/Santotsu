@@ -524,7 +524,7 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
         binding.videoSubColorWindow.setOnClickListener {
             val color = PrefManager.getVal(PrefName.SubWindow)
             val title = getString(R.string.sub_window_color_select)
-            showColorPicker(color, title, object : ColorPickerCallback {
+            showColorPicker(Int: color, String: title, object : PlayerSettingsActivity.ColorPickerCallback {
               override fun onColorSelected(color: Int) {
                   PrefManager.setVal(PrefName.SubWindow, color)
               }
