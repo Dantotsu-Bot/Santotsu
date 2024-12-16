@@ -524,12 +524,11 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
         binding.videoSubColorWindow.setOnClickListener {
             val color = PrefManager.getVal(PrefName.SubWindow)
             val title = getString(R.string.sub_window_color_select)
-            showColorPicker(color, title, object : PlayerSettingsActivity.ColorPickerCallback {
+            showColorPicker(color, title, object : ColorPickerCallback {
               override fun onColorSelected(color: Int) {
                   PrefManager.setVal(PrefName.SubWindow, color)
               }
-            }
-          )
+            })
           updateSubPreview()
         }
 
@@ -612,7 +611,7 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
         SimpleColorWheelDialog()
             .title(title)
             .color(originalColor)
-            .aplha(true)
+            .alpha(true)
             .neg()
             .show(this, "colorPicker")
     }
