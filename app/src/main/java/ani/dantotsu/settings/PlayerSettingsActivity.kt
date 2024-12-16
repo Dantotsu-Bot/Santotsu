@@ -32,8 +32,10 @@ import ani.dantotsu.toast
 import ani.dantotsu.util.customAlertDialog
 import com.google.android.material.slider.Slider.OnChangeListener
 import kotlin.math.roundToInt
+import eltos.simpledialogfragment.SimpleDialog
+import eltos.simpledialogfragment.color.SimpleColorDialog
 
-class PlayerSettingsActivity : AppCompatActivity() {
+class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultListener {
     lateinit var binding: ActivityPlayerSettingsBinding
     private val player = "player_settings"
 
@@ -516,6 +518,7 @@ class PlayerSettingsActivity : AppCompatActivity() {
             "Magenta"
         )
         binding.videoSubColorWindow.setOnClickListener {
+            var color: IntOrNull = getColor(Color.BLACK)
             customAlertDialog().apply {
                 setTitle(getString(R.string.sub_window_color_select))
                 singleChoiceItems(
@@ -598,6 +601,27 @@ class PlayerSettingsActivity : AppCompatActivity() {
             override fun onRetract() {}
         })
         updateSubPreview()
+    }
+
+    private fun getColor(originalColor: Int): Int? {
+        class CustomColorDialog : SimpleColorWheelDialog() {
+            override fun onPositiveButtonClick() {
+                super.onPositiveButtonClick()
+            }
+        }
+
+        val tag = "colorPicker"
+        CustomColorDialog()
+            .title("Test")
+            .color(originalColor)
+            .alpha(false)
+            .neg()
+            .show(context, tag)
+
+       if (extras.getInt(SimpleColorWheelDialog.COLOR) != null) {
+       val color = extras.getInt(SimpleColorWheelDialog.COLOR)
+       return color
+       }
     }
 
     private fun updateSubPreview() {
