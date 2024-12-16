@@ -33,7 +33,7 @@ import ani.dantotsu.util.customAlertDialog
 import com.google.android.material.slider.Slider.OnChangeListener
 import kotlin.math.roundToInt
 import eltos.simpledialogfragment.SimpleDialog
-import eltos.simpledialogfragment.color.SimpleColorWheelDialog
+import eltos.simpledialogfragment.color.SimpleColorDialog
 
 class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultListener {
     lateinit var binding: ActivityPlayerSettingsBinding
@@ -518,7 +518,13 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
             "Magenta"
         )
         binding.videoSubColorWindow.setOnClickListener {
-            var color: IntOrNull = getColor(Color.BLACK)
+            getColor(
+                context = this, 
+                currentColor = Color.BLACK,
+                onColorSelected = { selectedColor ->
+                    Logger.log("Selected Color: $selectedColor")
+                }
+            )
             customAlertDialog().apply {
                 setTitle(getString(R.string.sub_window_color_select))
                 singleChoiceItems(
@@ -603,15 +609,32 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
         updateSubPreview()
     }
 
-    private fun getColor(originalColor: Int): Int? {
-        SimpleColorWheelDialog.build()
-                      .color(originalColor)
-                      .alpha(false)
-                      .hideHexInput(true)
-                      .show(this, COLOR_DIALOG);
-
-       var color = extras.getInt(SimpleColorWheelDialog.COLOR);
-       return color 
+    private fun getColor(
+        context: Context, 
+        currentColor: Int, 
+        onColorSelected: (Int) -> Unit
+    ) {
+        val tag = "colorPicker"
+        
+        SimpleColorDialog()
+            .title(R.string.custom_theme)
+            .colorPreset(currentColor)
+            .colors(context, SimpleColorDialog.MATERIAL_COLOR_PALLET)
+            .allowCustom(true)
+            .showOutline(0x46000000)
+            .gridNumColumn(5)
+            .choiceMode(SimpleColorDialog.SINGLE_CHOICE)
+            .neg()
+            .show(context, tag, object : SimpleDialog.OnDialogResultListener {
+                override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
+                    if (dialogTag == tag && which == SimpleDialog.OnDialogResultListener.BUTTON_POSITIVE) {
+                        val selectedColor = extras.getInt(SimpleColorDialog.COLOR)
+                        onColorSelected(selectedColor)
+                        return true
+                    }
+                    return false
+                }
+            })
     }
 
     private fun updateSubPreview() {
