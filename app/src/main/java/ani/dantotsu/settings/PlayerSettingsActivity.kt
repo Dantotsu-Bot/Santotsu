@@ -641,7 +641,6 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
         }
         return false
     }
-}
 
     private fun updateSubPreview() {
         binding.subtitleTestWindow.run {
