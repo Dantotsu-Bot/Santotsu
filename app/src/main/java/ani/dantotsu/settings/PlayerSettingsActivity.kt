@@ -29,6 +29,7 @@ import ani.dantotsu.snackString
 import ani.dantotsu.statusBarHeight
 import ani.dantotsu.themes.ThemeManager
 import ani.dantotsu.toast
+import ani.dantotsu.util.Logger
 import ani.dantotsu.util.customAlertDialog
 import com.google.android.material.slider.Slider.OnChangeListener
 import kotlin.math.roundToInt
@@ -36,6 +37,9 @@ import eltos.simpledialogfragment.SimpleDialog
 import eltos.simpledialogfragment.color.SimpleColorDialog
 
 class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultListener {
+   interface ColorPickerCallback {
+        fun onColorSelected(color: Int)
+    }
     lateinit var binding: ActivityPlayerSettingsBinding
     private val player = "player_settings"
 
@@ -518,13 +522,11 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
             "Magenta"
         )
         binding.videoSubColorWindow.setOnClickListener {
-            getColor(
-                context = this, 
-                currentColor = Color.BLACK,
-                onColorSelected = { selectedColor ->
-                    Logger.log("Selected Color: $selectedColor")
-                }
-            )
+            showColorPicker(object : PlayerSettingsActivity.ColorPickerCallback {
+              override fun onColorSelected(color: Int) {
+                  PrefManager.setVal(PrefName.CustomThemeInt, color)
+              }
+          })
             customAlertDialog().apply {
                 setTitle(getString(R.string.sub_window_color_select))
                 singleChoiceItems(
@@ -609,33 +611,37 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
         updateSubPreview()
     }
 
-    private fun getColor(
-        context: Context, 
-        currentColor: Int, 
-        onColorSelected: (Int) -> Unit
-    ) {
-        val tag = "colorPicker"
+    private var colorPickerCallback: ColorPickerCallback? = null
+
+    fun showColorPicker(callback: ColorPickerCallback) {
+        colorPickerCallback = callback
         
+        val originalColor: Int = PrefManager.getVal(PrefName.CustomThemeInt)
+
         SimpleColorDialog()
             .title(R.string.custom_theme)
-            .colorPreset(currentColor)
-            .colors(context, SimpleColorDialog.MATERIAL_COLOR_PALLET)
+            .colorPreset(originalColor)
+            .colors(this, SimpleColorDialog.MATERIAL_COLOR_PALLET)
             .allowCustom(true)
             .showOutline(0x46000000)
             .gridNumColumn(5)
             .choiceMode(SimpleColorDialog.SINGLE_CHOICE)
             .neg()
-            .show(context, tag, object : SimpleDialog.OnDialogResultListener {
-                override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
-                    if (dialogTag == tag && which == SimpleDialog.OnDialogResultListener.BUTTON_POSITIVE) {
-                        val selectedColor = extras.getInt(SimpleColorDialog.COLOR)
-                        onColorSelected(selectedColor)
-                        return true
-                    }
-                    return false
-                }
-            })
+            .show(this, "colorPicker")
     }
+
+    override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
+        if (dialogTag == "colorPicker" && which == SimpleDialog.OnDialogResultListener.BUTTON_POSITIVE) {
+            val color = extras.getInt(SimpleColorDialog.COLOR)
+            
+            // Call the callback if it's set
+            colorPickerCallback?.onColorSelected(color)
+            
+            return true
+        }
+        return false
+    }
+}
 
     private fun updateSubPreview() {
         binding.subtitleTestWindow.run {
