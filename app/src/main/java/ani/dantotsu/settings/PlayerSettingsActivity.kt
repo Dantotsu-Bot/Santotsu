@@ -34,7 +34,7 @@ import ani.dantotsu.util.customAlertDialog
 import com.google.android.material.slider.Slider.OnChangeListener
 import kotlin.math.roundToInt
 import eltos.simpledialogfragment.SimpleDialog
-import eltos.simpledialogfragment.color.SimpleColorDialog
+import eltos.simpledialogfragment.color.SimpleColorWheelDialog
 
 class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultListener {
    interface ColorPickerCallback {
@@ -522,22 +522,15 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
             "Magenta"
         )
         binding.videoSubColorWindow.setOnClickListener {
-            showColorPicker(object : PlayerSettingsActivity.ColorPickerCallback {
+            val color = PrefManager.getVal(PrefName.SubWindow)
+            val title = getString(R.string.sub_window_color_select)
+            showColorPicker(color, title, object : PlayerSettingsActivity.ColorPickerCallback {
               override fun onColorSelected(color: Int) {
-                  PrefManager.setVal(PrefName.CustomThemeInt, color)
+                  PrefManager.setVal(PrefName.SubWindow, color)
               }
-          })
-            customAlertDialog().apply {
-                setTitle(getString(R.string.sub_window_color_select))
-                singleChoiceItems(
-                    colorsSubWindow,
-                    PrefManager.getVal(PrefName.SubWindow)
-                ) { count ->
-                    PrefManager.setVal(PrefName.SubWindow, count)
-                    updateSubPreview()
-                }
-                show()
             }
+          )
+          updateSubPreview()
         }
 
         binding.videoSubAlpha.value = PrefManager.getVal(PrefName.SubAlpha)
@@ -613,28 +606,20 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
 
     private var colorPickerCallback: ColorPickerCallback? = null
 
-    fun showColorPicker(callback: ColorPickerCallback) {
+    fun showColorPicker(originalColor: Int, title: String, callback: ColorPickerCallback) {
         colorPickerCallback = callback
-        
-        val originalColor: Int = PrefManager.getVal(PrefName.CustomThemeInt)
 
-        SimpleColorDialog()
-            .title(R.string.custom_theme)
-            .colorPreset(originalColor)
-            .colors(this, SimpleColorDialog.MATERIAL_COLOR_PALLET)
-            .allowCustom(true)
-            .showOutline(0x46000000)
-            .gridNumColumn(5)
-            .choiceMode(SimpleColorDialog.SINGLE_CHOICE)
+        SimpleColorWheelDialog()
+            .title(title)
+            .color(originalColor)
+            .aplha(true)
             .neg()
             .show(this, "colorPicker")
     }
 
     override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
         if (dialogTag == "colorPicker" && which == SimpleDialog.OnDialogResultListener.BUTTON_POSITIVE) {
-            val color = extras.getInt(SimpleColorDialog.COLOR)
-            
-            // Call the callback if it's set
+            val color = extras.getInt(SimpleColorWheelDialog.COLOR)
             colorPickerCallback?.onColorSelected(color)
             
             return true
@@ -645,24 +630,9 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
     private fun updateSubPreview() {
         binding.subtitleTestWindow.run {
             alpha = PrefManager.getVal(PrefName.SubAlpha)
-            setBackgroundColor(
-                when (PrefManager.getVal<Int>(PrefName.SubWindow)) {
-                    0 -> Color.TRANSPARENT
-                    1 -> Color.BLACK
-                    2 -> Color.DKGRAY
-                    3 -> Color.GRAY
-                    4 -> Color.LTGRAY
-                    5 -> Color.WHITE
-                    6 -> Color.RED
-                    7 -> Color.YELLOW
-                    8 -> Color.GREEN
-                    9 -> Color.CYAN
-                    10 -> Color.BLUE
-                    11 -> Color.MAGENTA
-                    else -> Color.TRANSPARENT
-                }
-            )
+            setBackgroundColor(PrefManager.getVal(PrefName.SubWindow))
         }
+
         binding.subtitleTestText.run {
             textSize = PrefManager.getVal<Int>(PrefName.FontSize).toSP
             typeface = when (PrefManager.getVal<Int>(PrefName.Font)) {
