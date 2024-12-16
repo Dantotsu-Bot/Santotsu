@@ -507,29 +507,15 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
             }
         }
 
-        val colorsSubWindow = arrayOf(
-            "Transparent",
-            "Black",
-            "Dark Gray",
-            "Gray",
-            "Light Gray",
-            "White",
-            "Red",
-            "Yellow",
-            "Green",
-            "Cyan",
-            "Blue",
-            "Magenta"
-        )
         binding.videoSubColorWindow.setOnClickListener {
-            val color :Int = PrefManager.getVal(PrefName.SubWindow)
-            val title :String = getString(R.string.sub_window_color_select)
-            showColorPicker(color, title, object: PlayerSettingsActivity.ColorPickerCallback {
+            val color = PrefManager.getVal<Int>(PrefName.SubWindow)
+            val title = getString(R.string.sub_window_color_select)
+            showColorPicker(color, title, object: ColorPickerCallback {
               override fun onColorSelected(color: Int) {
                   PrefManager.setVal(PrefName.SubWindow, color)
+                  updateSubPreview()
               }
-            })
-          updateSubPreview()
+           })
         }
 
         binding.videoSubAlpha.value = PrefManager.getVal(PrefName.SubAlpha)
@@ -613,6 +599,7 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
             .color(originalColor)
             .alpha(true)
             .neg()
+            .theme(@style/MyPopup)
             .show(this, "colorPicker")
     }
 
