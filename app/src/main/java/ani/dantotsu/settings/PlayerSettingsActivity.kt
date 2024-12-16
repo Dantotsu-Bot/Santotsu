@@ -584,6 +584,7 @@ class PlayerSettingsActivity : AppCompatActivity(), SimpleDialog.OnDialogResultL
                 6 -> ResourcesCompat.getFont(this.context, R.font.blocky)
                 else -> ResourcesCompat.getFont(this.context, R.font.poppins_semi_bold)
             }
+
             setTextColor(PrefManager.getVal<Int>(PrefName.PrimaryColor))
 
             setBackgroundColor(PrefManager.getVal<Int>(PrefName.SubBackground))

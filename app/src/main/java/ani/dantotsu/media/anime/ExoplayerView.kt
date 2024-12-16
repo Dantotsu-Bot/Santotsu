@@ -331,12 +331,14 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
 
         val secondaryColor = PrefManager.getVal<Int>(PrefName.SecondaryColor)
 
+        val outline = when (PrefManager.getVal<Int>(PrefName.Outline)) {
             0 -> EDGE_TYPE_OUTLINE // Normal
             1 -> EDGE_TYPE_DEPRESSED // Shine
             2 -> EDGE_TYPE_DROP_SHADOW // Drop shadow
             3 -> EDGE_TYPE_NONE // No outline
             else -> EDGE_TYPE_OUTLINE // Normal
         }
+
         val subBackground = PrefManager.getVal<Int>(PrefName.SubBackground)
 
         val subWindow = PrefManager.getVal<Int>(PrefName.SubWindow)
