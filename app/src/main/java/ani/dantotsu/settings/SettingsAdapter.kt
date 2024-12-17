@@ -96,8 +96,7 @@ override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             val clickableViews = arrayOf(
                 b.settingsDesc,
                 b.settingsIcon,
-                b.settingsLayout,
-                b.settingsButton
+                b.settingsLayout
             )
 
             // Populate views
@@ -116,15 +115,11 @@ override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             }
 
             // Set up click and long-click listeners for all views
-            clickableViews.forEach { view ->
+            // Combine clickable views with the button
+            (clickableViews + b.settingsButton).forEach { view ->
                 view.setOnClickListener {
-                    // If the view is the switch, toggle it
-                    if (view is SwitchCompat) {
-                        view.isChecked = !view.isChecked
-                    } else {
-                        // For other views, trigger the same action as the switch
-                        b.settingsButton.isChecked = !b.settingsButton.isChecked
-                    }
+                    // Toggle the switch when any view is clicked
+                    b.settingsButton.isChecked = !b.settingsButton.isChecked
                 }
                 
                 view.setOnLongClickListener {
