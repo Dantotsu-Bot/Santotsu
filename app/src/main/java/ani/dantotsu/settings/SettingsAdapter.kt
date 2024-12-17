@@ -99,7 +99,6 @@ class SettingsAdapter(private val settings: ArrayList<Settings>) :
                     true
                 }
                arrayOf(
-                  b.settingsTitle,
                   b.settingsDesc,
                   b.settingsIcon,
                   b.settingsLayout,
