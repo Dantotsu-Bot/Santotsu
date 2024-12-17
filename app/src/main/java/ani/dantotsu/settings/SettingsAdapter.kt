@@ -39,82 +39,109 @@ class SettingsAdapter(private val settings: ArrayList<Settings>) :
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val settings = settings[position]
-        when (settings.type) {
-            1 -> {
-                val b = (holder as SettingsViewHolder).binding
-                setAnimation(b.root.context, b.root)
+override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    val settings = settings[position]
+    when (settings.type) {
+        1 -> {
+            val b = (holder as SettingsViewHolder).binding
+            setAnimation(b.root.context, b.root)
 
-                b.settingsTitle.text = settings.name
-                b.settingsDesc.text = settings.desc
-                b.settingsIcon.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        b.root.context, settings.icon
-                    )
+            // Set up common views
+            val clickableViews = arrayOf(
+                b.settingsTitle,
+                b.settingsDesc,
+                b.settingsIcon,
+                b.settingsLayout
+            )
+
+            // Populate views
+            b.settingsTitle.text = settings.name
+            b.settingsDesc.text = settings.desc
+            b.settingsIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    b.root.context, settings.icon
                 )
-                b.settingsLayout.setOnClickListener {
+            )
+
+            // Set up click and long-click listeners for all views
+            clickableViews.forEach { view ->
+                view.setOnClickListener {
                     settings.onClick?.invoke(b)
                 }
-                b.settingsLayout.setOnLongClickListener {
+                view.setOnLongClickListener {
                     settings.onLongClick?.invoke()
                     true
                 }
-               arrayOf(
-                  b.settingsTitle,
-                  b.settingsDesc,
-                  b.settingsIcon,
-                  b.settingsLayout
-              ).forEach {
-                  it.isClickable = settings.isVisible
-                  it.isEnabled = settings.isVisible
-                  it.alpha = when (settings.isVisible) {
-                      true -> 1f
-                      false -> 0.5f
-                  }
-            }
-                b.settingsIconRight.visibility =
-                    if (settings.isActivity) View.VISIBLE else View.GONE
-                b.attachView.visibility = if (settings.attach != null) View.VISIBLE else View.GONE
-                settings.attach?.invoke(b)
+                
+                // Visibility and alpha control
+                view.isClickable = settings.isVisible
+                view.isEnabled = settings.isVisible
+                view.alpha = if (settings.isVisible) 1f else 0.5f
             }
 
-            2 -> {
-                val b = (holder as SettingsSwitchViewHolder).binding
-                setAnimation(b.root.context, b.root)
+            // Additional view setups
+            b.settingsIconRight.visibility = 
+                if (settings.isActivity) View.VISIBLE else View.GONE
+            b.attachView.visibility = 
+                if (settings.attach != null) View.VISIBLE else View.GONE
+            
+            settings.attach?.invoke(b)
+        }
 
-                b.settingsButton.text = settings.name
-                b.settingsDesc.text = settings.desc
-                b.settingsIcon.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        b.root.context, settings.icon
-                    )
+        2 -> {
+            val b = (holder as SettingsSwitchViewHolder).binding
+            setAnimation(b.root.context, b.root)
+
+            // Set up common views
+            val clickableViews = arrayOf(
+                b.settingsDesc,
+                b.settingsIcon,
+                b.settingsLayout,
+                b.settingsButton
+            )
+
+            // Populate views
+            b.settingsButton.text = settings.name
+            b.settingsDesc.text = settings.desc
+            b.settingsIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    b.root.context, settings.icon
                 )
-                b.settingsButton.isChecked = settings.isChecked
-                b.settingsButton.setOnCheckedChangeListener { _, isChecked ->
-                    settings.switch?.invoke(isChecked, b)
+            )
+
+            // Switch-specific setup
+            b.settingsButton.isChecked = settings.isChecked
+            b.settingsButton.setOnCheckedChangeListener { _, isChecked ->
+                settings.switch?.invoke(isChecked, b)
+            }
+
+            // Set up click and long-click listeners for all views
+            clickableViews.forEach { view ->
+                view.setOnClickListener {
+                    // If the view is the switch, toggle it
+                    if (view is SwitchCompat) {
+                        view.isChecked = !view.isChecked
+                    } else {
+                        // For other views, trigger the same action as the switch
+                        b.settingsButton.isChecked = !b.settingsButton.isChecked
+                    }
                 }
-                b.settingsLayout.setOnLongClickListener {
+                
+                view.setOnLongClickListener {
                     settings.onLongClick?.invoke()
                     true
                 }
-               arrayOf(
-                  b.settingsDesc,
-                  b.settingsIcon,
-                  b.settingsLayout,
-                  b.settingsButton
-              ).forEach {
-                  it.isClickable = settings.isVisible
-                  it.isEnabled = settings.isVisible
-                  it.alpha = when (settings.isVisible) {
-                      true -> 1f
-                      false -> 0.5f
-                  }
+                
+                // Visibility and alpha control
+                view.isClickable = settings.isVisible
+                view.isEnabled = settings.isVisible
+                view.alpha = if (settings.isVisible) 1f else 0.5f
             }
-                settings.attachToSwitch?.invoke(b)
-            }
+
+            settings.attachToSwitch?.invoke(b)
         }
     }
+}
 
     override fun getItemCount(): Int = settings.size
 
