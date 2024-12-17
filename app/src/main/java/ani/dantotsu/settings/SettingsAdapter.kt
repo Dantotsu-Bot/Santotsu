@@ -60,10 +60,19 @@ class SettingsAdapter(private val settings: ArrayList<Settings>) :
                     settings.onLongClick?.invoke()
                     true
                 }
-                View.apply {
-                    isEnabled = settings.isVisible
-                    alpha = if (settings.isVisible) 1f else 0.5f
-                }
+               arrayOf(
+                  b.settingsTitle,
+                  b.settingsDesc,
+                  b.settingsIcon,
+                  b.settingsLayout
+              ).forEach {
+                  it.isClickable = settings.isVisible
+                  it.isEnabled = settings.isVisible
+                  it.alpha = when (settings.isVisible) {
+                      true -> 1f
+                      false -> 0.5f
+                  }
+            }
                 b.settingsIconRight.visibility =
                     if (settings.isActivity) View.VISIBLE else View.GONE
                 b.attachView.visibility = if (settings.attach != null) View.VISIBLE else View.GONE
@@ -89,10 +98,20 @@ class SettingsAdapter(private val settings: ArrayList<Settings>) :
                     settings.onLongClick?.invoke()
                     true
                 }
-                View.apply {
-                    isEnabled = settings.isVisible
-                    alpha = if (settings.isVisible) 1f else 0.5f
-                }
+               arrayOf(
+                  b.settingsTitle,
+                  b.settingsDesc,
+                  b.settingsIcon,
+                  b.settingsLayout,
+                  b.settingsButton
+              ).forEach {
+                  it.isClickable = settings.isVisible
+                  it.isEnabled = settings.isVisible
+                  it.alpha = when (settings.isVisible) {
+                      true -> 1f
+                      false -> 0.5f
+                  }
+            }
                 settings.attachToSwitch?.invoke(b)
             }
         }
