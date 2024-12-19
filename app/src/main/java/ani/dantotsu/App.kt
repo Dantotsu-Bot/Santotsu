@@ -85,24 +85,6 @@ class App : MultiDexApplication() {
         Injekt.importModule(AppModule(this))
         Injekt.importModule(PreferenceModule(this))
 
-    override fun newImageLoader(): ImageLoader {
-        return ImageLoader.Builder(this)
-            .memoryCache {
-                MemoryCache.Builder()
-                    .maxSizePercent(this, 0.25)
-                    .build()
-            }
-            .diskCache {
-                DiskCache.Builder()
-                    .directory(cacheDir.resolve("image_cache"))
-                    .maxSizeBytes(1024 * 1024 * 100) // 100MB
-                    .build()
-            }
-            .allowHardware(false)
-            .crossfade(true)
-            .build()
-    }
-
         val useMaterialYou: Boolean = PrefManager.getVal(PrefName.UseMaterialYou)
         if (useMaterialYou) {
             DynamicColors.applyToActivitiesIfAvailable(this)
@@ -184,6 +166,25 @@ class App : MultiDexApplication() {
             Logger.log(e)
         }
     }
+
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .memoryCache {
+                MemoryCache.Builder()
+                    .maxSizePercent(this, 0.25)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(cacheDir.resolve("image_cache"))
+                    .maxSizeBytes(1024 * 1024 * 100) // 100MB
+                    .build()
+            }
+            .allowHardware(false)
+            .crossfade(true)
+            .build()
+    }
+
 
     inner class FTActivityLifecycleCallbacks : ActivityLifecycleCallbacks {
         var currentActivity: Activity? = null
