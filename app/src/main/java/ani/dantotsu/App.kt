@@ -160,7 +160,6 @@ class App : MultiDexApplication(), SingletonImageLoader.Factory {
     }
 
     override fun newImageLoader(context: Context): ImageLoader {
-        val isHardwareBitmapSupported: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
         return ImageLoader.Builder(context)
             .memoryCache {
                 MemoryCache.Builder()
