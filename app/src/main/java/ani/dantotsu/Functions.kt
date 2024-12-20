@@ -139,7 +139,6 @@ import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.html.TagHandlerNoOp
 import io.noties.markwon.image.AsyncDrawable
 import io.noties.markwon.image.glide.GlideImagesPlugin
-import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -1406,6 +1405,8 @@ fun blurImage(imageView: ImageView, banner: String?) {
         val context = imageView.context
         if (!(context as Activity).isDestroyed) {
             val url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { banner }
+            
+            // Determine the data source
             val data = when {
                 banner.startsWith("http") -> url
                 banner.startsWith("content://") -> Uri.parse(url)
@@ -1415,14 +1416,15 @@ fun blurImage(imageView: ImageView, banner: String?) {
             imageView.load(data) {
                 crossfade(true)
                 size(400)
-                scale(Scale.FILL)
                 
                 if (PrefManager.getVal(PrefName.BlurBanners)) {
                     transformations(BlurTransformation(context, radius, sampling))
                 }
                 
+                // If loading from URL with headers
                 if (banner.startsWith("http")) {
                     httpHeaders(NetworkHeaders.Builder().apply {
+                        // Add your headers here if needed
                     }.build())
                 }
             }

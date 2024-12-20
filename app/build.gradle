@@ -107,6 +107,7 @@ dependencies {
     ext.coil_version = '3.0.0-rc01'
     implementation "io.coil-kt.coil3:coil:$coil_version"
     implementation "io.coil-kt.coil3:coil-network-okhttp:$coil_version"
+    implementation 'jp.wasabeef.transformers:coil:1.0.6'
 
 //  Glide
     ext.glide_version = '4.16.0'
