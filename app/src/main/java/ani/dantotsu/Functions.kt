@@ -631,80 +631,80 @@ fun String.findBetween(a: String, b: String): String? {
     return string.ifEmpty { null }
 }
 
-  fun ImageView.loadImage(url: String?, size: Int = 0) {
-      if (!url.isNullOrEmpty()) {
-          val localFile = File(url)
-          if (localFile.exists()) {
-              loadLocalImage(localFile, size)
-          } else {
-              loadImage(FileUrl(url), size)
-          }
-      }
-  }
-  
-  fun ImageView.loadImage(file: FileUrl?, size: Int = 0) {
-      file?.url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { file?.url ?: "" }
-      if (file?.url?.isNotEmpty() == true) {
-          tryWith {
-              val imageUrl = if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url
-              load(imageUrl) {
-                  crossfade(true)
-                  if (size > 0) {
-                      scale(coil3.size.Scale.FILL)
-                      size(size, size)
-                  }
-                  if (!file.url.startsWith("content://")) {
-                      // Set headers using Coil's request builder
-                      file.headers.forEach { (key, value) ->
-                          addHeader(key, value)
-                      }
-                  }
-                  memoryCachePolicy(CachePolicy.ENABLED)
-                  diskCachePolicy(CachePolicy.ENABLED)
-              }
-          }
-      }
-  }
-  
-  fun ImageView.loadImage(file: FileUrl?, width: Int = 0, height: Int = 0) {
-      file?.url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { file?.url ?: "" }
-      if (file?.url?.isNotEmpty() == true) {
-          tryWith {
-              val imageUrl = if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url
-              load(imageUrl) {
-                  crossfade(true)
-                  if (width > 0 && height > 0) {
-                      scale(coil3.size.Scale.FILL)
-                      size(width, height)
-                  }
-                  if (!file.url.startsWith("content://")) {
-                      // Set headers using Coil's request builder
-                      file.headers.forEach { (key, value) ->
-                          addHeader(key, value)
-                      }
-                  }
-                  memoryCachePolicy(CachePolicy.ENABLED)
-                  diskCachePolicy(CachePolicy.ENABLED)
-              }
-          }
-      }
-  }
-  
-  fun ImageView.loadLocalImage(file: File?, size: Int = 0) {
-      if (file?.exists() == true) {
-          tryWith {
-              load(file) {
-                  crossfade(true)
-                  if (size > 0) {
-                      scale(coil3.size.Scale.FILL)
-                      size(size, size)
-                  }
-                  memoryCachePolicy(CachePolicy.ENABLED)
-                  diskCachePolicy(CachePolicy.ENABLED)
-              }
-          }
-      }
-  }
+fun ImageView.loadImage(url: String?, size: Int = 0) {
+    if (!url.isNullOrEmpty()) {
+        val localFile = File(url)
+        if (localFile.exists()) {
+            loadLocalImage(localFile, size)
+        } else {
+            loadImage(FileUrl(url), size)
+        }
+    }
+}
+
+fun ImageView.loadImage(file: FileUrl?, size: Int = 0) {
+    file?.url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { file?.url ?: "" }
+    if (file?.url?.isNotEmpty() == true) {
+        tryWith {
+            val imageUrl = if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url
+            load(imageUrl) {
+                crossfade(true)
+                if (size > 0) {
+                    scale(Scale.FILL)
+                    size(size, size)
+                }
+                if (!file.url.startsWith("content://")) {
+                    // Using setHeader method
+                    file.headers.forEach { (key, value) ->
+                        setHeader(key, value)
+                    }
+                }
+                memoryCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.ENABLED)
+            }
+        }
+    }
+}
+
+fun ImageView.loadImage(file: FileUrl?, width: Int = 0, height: Int = 0) {
+    file?.url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { file?.url ?: "" }
+    if (file?.url?.isNotEmpty() == true) {
+        tryWith {
+            val imageUrl = if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url
+            load(imageUrl) {
+                crossfade(true)
+                if (width > 0 && height > 0) {
+                    scale(Scale.FILL)
+                    size(width, height)
+                }
+                if (!file.url.startsWith("content://")) {
+                    // Using setHeader method
+                    file.headers.forEach { (key, value) ->
+                        setHeader(key, value)
+                    }
+                }
+                memoryCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.ENABLED)
+            }
+        }
+    }
+}
+
+fun ImageView.loadLocalImage(file: File?, size: Int = 0) {
+    if (file?.exists() == true) {
+        tryWith {
+            load(file) {
+                crossfade(true)
+                if (size > 0) {
+                    scale(Scale.FILL)
+                    size(size, size)
+                }
+                memoryCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.ENABLED)
+            }
+        }
+    }
+}
 
 class SafeClickListener(
     private var defaultInterval: Int = 1000,
