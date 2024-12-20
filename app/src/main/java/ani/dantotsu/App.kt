@@ -41,8 +41,15 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.addSingletonFactory
 import uy.kohesive.injekt.api.get
 
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import coil3.disk.DiskCache
+import coil3.memory.MemoryCache
+import coil3.request.allowHardware
+import coil3.request.crossfade
+
 @SuppressLint("StaticFieldLeak")
-class App : MultiDexApplication() {
+class App : MultiDexApplication(), SingletonImageLoader.Factory {
     private lateinit var animeExtensionManager: AnimeExtensionManager
     private lateinit var mangaExtensionManager: MangaExtensionManager
     private lateinit var novelExtensionManager: NovelExtensionManager
@@ -147,6 +154,24 @@ class App : MultiDexApplication() {
                 Logger.log(e)
             }
         }
+    }
+
+    override fun newImageLoader(context: Context): ImageLoader {
+        return ImageLoader.Builder(context)
+            .memoryCache {
+                MemoryCache.Builder()
+                    .maxSizePercent(context, 0.25)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(context.cacheDir.resolve("image_cache"))
+                    .maxSizeBytes(1024L * 1024L * 100L) // 100MB
+                    .build()
+            }
+            .allowHardware(false)
+            .crossfade(true)
+            .build()
     }
 
     private fun setupNotificationChannels() {
