@@ -172,7 +172,7 @@ class App : MultiDexApplication(), SingletonImageLoader.Factory {
                     .maxSizeBytes(1024 * 1024 * 100) // 100MB
                     .build()
             }
-            .allowHardware(isHardwareBitmapSupported)
+            .allowHardware(false)
             .build()
     }
 
