@@ -1493,18 +1493,26 @@ fun buildMarkwon(
     fragment: Fragment? = null,
     anilist: Boolean = false
 ): Markwon {
-    val coilPlugin: CoilImagesPlugin
-      get() = CoilImagesPlugin.create(context, imageLoader)
-
-    val imageLoader: ImageLoader
-      get() = ImageLoader.Builder(context)
+    val imageLoader = ImageLoader.Builder(activity)
         .apply {
-          availableMemoryPercentage(0.5)
-          bitmapPoolPercentage(0.5)
-          crossfade(true)
+            availableMemoryPercentage(0.5)
+            bitmapPoolPercentage(0.5)
+            crossfade(true)
+            eventListener(object : EventListener {
+                override fun onStart(request: ImageRequest) {
+                    super.onStart(request)
+                    Logger.log("Loading image: ${request.data}")
+                }
+    
+                override fun onError(request: ImageRequest, throwable: Throwable) {
+                    super.onError(request, throwable)
+                    Logger.log("Image failed to load: ${request.data}")
+                    Logger.log(throwable as Exception)
+                }
+            })
         }
         .build()
-
+    
     val markwon = Markwon.builder(activity)
         .usePlugin(object : AbstractMarkwonPlugin() {
             override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
@@ -1513,7 +1521,6 @@ fun buildMarkwon(
                 }
             }
         })
-
         .usePlugin(SoftBreakAddsNewLinePlugin.create())
         .usePlugin(StrikethroughPlugin.create())
         .usePlugin(TablePlugin.create(activity))
@@ -1527,9 +1534,30 @@ fun buildMarkwon(
             }
             plugin.addHandler(AlignTagHandler())
         })
-        .usePlugin(coilPlugin)
+        .usePlugin(CoilImagesPlugin.create(
+            object : CoilImagesPlugin.CoilStore {
+                override fun load(drawable: AsyncDrawable): ImageRequest {
+                    return ImageRequest.Builder(activity)
+                        .data(drawable.destination)
+                        .defaults(imageLoader.defaults)
+                        .crossfade(true)
+                        .listener(
+                            onSuccess = { _, result ->
+                                // Handle animated images if needed
+                                (result.drawable as? AnimatedDrawable)?.start()
+                            }
+                        )
+                        .build()
+                }
+    
+                override fun cancel(disposable: Disposable) {
+                    disposable.dispose()
+                }
+            },
+            imageLoader
+        ))
         .build()
-    return markwon
+   return markwon
 }
 
 
