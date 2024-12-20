@@ -108,19 +108,6 @@ import ani.dantotsu.settings.saving.internal.PreferenceKeystore
 import ani.dantotsu.settings.saving.internal.PreferenceKeystore.Companion.generateSalt
 import ani.dantotsu.util.CountUpTimer
 import ani.dantotsu.util.Logger
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
-import com.bumptech.glide.load.resource.gif.GifDrawable
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.Target
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -174,6 +161,7 @@ import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import coil3.request.Disposable
 import coil3.request.error
 import coil3.request.placeholder
 import coil3.request.target
@@ -1493,71 +1481,53 @@ fun buildMarkwon(
     fragment: Fragment? = null,
     anilist: Boolean = false
 ): Markwon {
-    val imageLoader = ImageLoader.Builder(activity)
-        .apply {
-            availableMemoryPercentage(0.5)
-            bitmapPoolPercentage(0.5)
-            crossfade(true)
-            eventListener(object : EventListener {
-                override fun onStart(request: ImageRequest) {
-                    super.onStart(request)
-                    Logger.log("Loading image: ${request.data}")
-                }
-    
-                override fun onError(request: ImageRequest, throwable: Throwable) {
-                    super.onError(request, throwable)
-                    Logger.log("Image failed to load: ${request.data}")
-                    Logger.log(throwable as Exception)
-                }
-            })
+val imageLoader = (activity.applicationContext as App).newImageLoader(activity)
+
+val markwon = Markwon.builder(activity)
+    .usePlugin(object : AbstractMarkwonPlugin() {
+        override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
+            builder.linkResolver { _, link ->
+                openOrCopyAnilistLink(link)
+            }
         }
-        .build()
-    
-    val markwon = Markwon.builder(activity)
-        .usePlugin(object : AbstractMarkwonPlugin() {
-            override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                builder.linkResolver { _, link ->
-                    openOrCopyAnilistLink(link)
-                }
+    })
+    .usePlugin(SoftBreakAddsNewLinePlugin.create())
+    .usePlugin(StrikethroughPlugin.create())
+    .usePlugin(TablePlugin.create(activity))
+    .usePlugin(TaskListPlugin.create(activity))
+    .usePlugin(SpoilerPlugin(anilist))
+    .usePlugin(HtmlPlugin.create { plugin ->
+        if (userInputContent) {
+            plugin.addHandler(
+                TagHandlerNoOp.create("h1", "h2", "h3", "h4", "h5", "h6", "hr", "pre", "a")
+            )
+        }
+        plugin.addHandler(AlignTagHandler())
+    })
+    .usePlugin(CoilImagesPlugin.create(
+        object : CoilImagesPlugin.CoilStore {
+            override fun load(drawable: AsyncDrawable): ImageRequest {
+                Logger.log("Loading image: ${drawable.destination}")
+                return ImageRequest.Builder(activity)
+                    .data(drawable.destination)
+                    .crossfade(true)
+                    .listener(
+                        onError = { _, throwable ->
+                            Logger.log("Image failed to load: ${drawable.destination}")
+                            Logger.log(throwable as Exception)
+                        }
+                    )
+                    .build()
             }
-        })
-        .usePlugin(SoftBreakAddsNewLinePlugin.create())
-        .usePlugin(StrikethroughPlugin.create())
-        .usePlugin(TablePlugin.create(activity))
-        .usePlugin(TaskListPlugin.create(activity))
-        .usePlugin(SpoilerPlugin(anilist))
-        .usePlugin(HtmlPlugin.create { plugin ->
-            if (userInputContent) {
-                plugin.addHandler(
-                    TagHandlerNoOp.create("h1", "h2", "h3", "h4", "h5", "h6", "hr", "pre", "a")
-                )
+
+            override fun cancel(disposable: Disposable) {
+                disposable.dispose()
             }
-            plugin.addHandler(AlignTagHandler())
-        })
-        .usePlugin(CoilImagesPlugin.create(
-            object : CoilImagesPlugin.CoilStore {
-                override fun load(drawable: AsyncDrawable): ImageRequest {
-                    return ImageRequest.Builder(activity)
-                        .data(drawable.destination)
-                        .defaults(imageLoader.defaults)
-                        .crossfade(true)
-                        .listener(
-                            onSuccess = { _, result ->
-                                // Handle animated images if needed
-                                (result.drawable as? AnimatedDrawable)?.start()
-                            }
-                        )
-                        .build()
-                }
-    
-                override fun cancel(disposable: Disposable) {
-                    disposable.dispose()
-                }
-            },
-            imageLoader
-        ))
-        .build()
-   return markwon
+        },
+        imageLoader
+    ))
+    .build()
+  return markwon
 }
 
 
