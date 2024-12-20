@@ -23,7 +23,7 @@ import ani.dantotsu.parsers.novel.NovelExtension
 import ani.dantotsu.parsers.novel.NovelExtensionManager
 import ani.dantotsu.settings.saving.PrefManager
 import ani.dantotsu.settings.saving.PrefName
-import com.bumptech.glide.Glide
+import coil3.load
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -162,9 +162,7 @@ class NovelExtensionAdapter(private val clickListener: OnNovelInstallClickListen
         val extension = getItem(position)
         if (extension != null) {
             if (!skipIcons) {
-                Glide.with(holder.itemView.context)
-                    .load(extension.iconUrl)
-                    .into(holder.extensionIconImageView)
+                holder.extensionIconImageView.load(extension.iconUrl)
             }
             holder.bind(extension)
         }

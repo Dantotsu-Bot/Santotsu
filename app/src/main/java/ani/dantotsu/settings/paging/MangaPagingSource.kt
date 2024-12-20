@@ -21,7 +21,7 @@ import ani.dantotsu.databinding.ItemExtensionAllBinding
 import ani.dantotsu.others.LanguageMapper
 import ani.dantotsu.settings.saving.PrefManager
 import ani.dantotsu.settings.saving.PrefName
-import com.bumptech.glide.Glide
+import coil3.load
 import eu.kanade.tachiyomi.extension.manga.MangaExtensionManager
 import eu.kanade.tachiyomi.extension.manga.model.MangaExtension
 import kotlinx.coroutines.CoroutineScope
@@ -160,9 +160,7 @@ class MangaExtensionAdapter(private val clickListener: OnMangaInstallClickListen
         val extension = getItem(position)
         if (extension != null) {
             if (!skipIcons) {
-                Glide.with(holder.itemView.context)
-                    .load(extension.iconUrl)
-                    .into(holder.extensionIconImageView)
+                holder.extensionIconImageView.load(extension.iconUrl)
             }
             holder.bind(extension)
         }
