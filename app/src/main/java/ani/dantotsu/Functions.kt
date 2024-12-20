@@ -631,8 +631,6 @@ fun String.findBetween(a: String, b: String): String? {
     return string.ifEmpty { null }
 }
 
-fun ImageView.enqueue(builder: ImageRequest.Builder) = context.imageLoader.enqueue(builder.build())
-
 fun ImageView.loadImage(url: String?, size: Int = 0) {
     if (!url.isNullOrEmpty()) {
         val localFile = File(url)
@@ -648,25 +646,22 @@ fun ImageView.loadImage(file: FileUrl?, size: Int = 0) {
     file?.url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { file?.url ?: "" }
     if (file?.url?.isNotEmpty() == true) {
         tryWith {
-            val builder = ImageRequest.Builder(context)
-                .data(if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url)
-                .crossfade(true)
-
-            // Add headers if not content URI
-            if (!file.url.startsWith("content://") && file.headers.isNotEmpty()) {
-                builder.httpHeaders(NetworkHeaders.Builder().apply {
-                    file.headers.forEach { (key, value) ->
-                        add(key, value)
-                    }
-                }.build())
+            if (file.url.startsWith("content://")) {
+                load(Uri.parse(file.url)) {
+                    crossfade(true)
+                    if (size > 0) size(size)
+                }
+            } else {
+                load(file.url) {
+                    crossfade(true)
+                    if (size > 0) size(size)
+                    httpHeaders(NetworkHeaders.Builder().apply {
+                        file.headers.forEach { (key, value) ->
+                            add(key, value)
+                        }
+                    }.build())
+                }
             }
-
-            // Add size if specified
-            if (size > 0) {
-                builder.size(size)
-            }
-
-            enqueue(builder)
         }
     }
 }
@@ -675,25 +670,22 @@ fun ImageView.loadImage(file: FileUrl?, width: Int = 0, height: Int = 0) {
     file?.url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { file?.url ?: "" }
     if (file?.url?.isNotEmpty() == true) {
         tryWith {
-            val builder = ImageRequest.Builder(context)
-                .data(if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url)
-                .crossfade(true)
-
-            // Add headers if not content URI
-            if (!file.url.startsWith("content://") && file.headers.isNotEmpty()) {
-                builder.httpHeaders(NetworkHeaders.Builder().apply {
-                    file.headers.forEach { (key, value) ->
-                        add(key, value)
-                    }
-                }.build())
+            if (file.url.startsWith("content://")) {
+                load(Uri.parse(file.url)) {
+                    crossfade(true)
+                    if (width > 0 && height > 0) size(width, height)
+                }
+            } else {
+                load(file.url) {
+                    crossfade(true)
+                    if (width > 0 && height > 0) size(width, height)
+                    httpHeaders(NetworkHeaders.Builder().apply {
+                        file.headers.forEach { (key, value) ->
+                            add(key, value)
+                        }
+                    }.build())
+                }
             }
-
-            // Add size if specified
-            if (width > 0 && height > 0) {
-                builder.size(width, height)
-            }
-
-            enqueue(builder)
         }
     }
 }
@@ -701,15 +693,10 @@ fun ImageView.loadImage(file: FileUrl?, width: Int = 0, height: Int = 0) {
 fun ImageView.loadLocalImage(file: File?, size: Int = 0) {
     if (file?.exists() == true) {
         tryWith {
-            val builder = ImageRequest.Builder(context)
-                .data(file)
-                .crossfade(true)
-
-            if (size > 0) {
-                builder.size(size)
+            load(file) {
+                crossfade(true)
+                if (size > 0) size(size)
             }
-
-            enqueue(builder)
         }
     }
 }
