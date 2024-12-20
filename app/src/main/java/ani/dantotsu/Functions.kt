@@ -631,6 +631,8 @@ fun String.findBetween(a: String, b: String): String? {
     return string.ifEmpty { null }
 }
 
+fun ImageView.enqueue(builder: ImageRequest.Builder) = context.imageLoader.enqueue(builder.build())
+
 fun ImageView.loadImage(url: String?, size: Int = 0) {
     if (!url.isNullOrEmpty()) {
         val localFile = File(url)
@@ -646,22 +648,25 @@ fun ImageView.loadImage(file: FileUrl?, size: Int = 0) {
     file?.url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { file?.url ?: "" }
     if (file?.url?.isNotEmpty() == true) {
         tryWith {
-            val imageUrl = if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url
-            load(imageUrl) {
-                crossfade(true)
-                if (size > 0) {
-                    scale(Scale.FILL)
-                    size(size, size)
-                }
-                if (!file.url.startsWith("content://")) {
-                    // Using setHeader method
+            val builder = ImageRequest.Builder(context)
+                .data(if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url)
+                .crossfade(true)
+
+            // Add headers if not content URI
+            if (!file.url.startsWith("content://") && file.headers.isNotEmpty()) {
+                builder.httpHeaders(NetworkHeaders.Builder().apply {
                     file.headers.forEach { (key, value) ->
-                        setHeader(key, value)
+                        add(key, value)
                     }
-                }
-                memoryCachePolicy(CachePolicy.ENABLED)
-                diskCachePolicy(CachePolicy.ENABLED)
+                }.build())
             }
+
+            // Add size if specified
+            if (size > 0) {
+                builder.size(size)
+            }
+
+            enqueue(builder)
         }
     }
 }
@@ -670,22 +675,25 @@ fun ImageView.loadImage(file: FileUrl?, width: Int = 0, height: Int = 0) {
     file?.url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { file?.url ?: "" }
     if (file?.url?.isNotEmpty() == true) {
         tryWith {
-            val imageUrl = if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url
-            load(imageUrl) {
-                crossfade(true)
-                if (width > 0 && height > 0) {
-                    scale(Scale.FILL)
-                    size(width, height)
-                }
-                if (!file.url.startsWith("content://")) {
-                    // Using setHeader method
+            val builder = ImageRequest.Builder(context)
+                .data(if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url)
+                .crossfade(true)
+
+            // Add headers if not content URI
+            if (!file.url.startsWith("content://") && file.headers.isNotEmpty()) {
+                builder.httpHeaders(NetworkHeaders.Builder().apply {
                     file.headers.forEach { (key, value) ->
-                        setHeader(key, value)
+                        add(key, value)
                     }
-                }
-                memoryCachePolicy(CachePolicy.ENABLED)
-                diskCachePolicy(CachePolicy.ENABLED)
+                }.build())
             }
+
+            // Add size if specified
+            if (width > 0 && height > 0) {
+                builder.size(width, height)
+            }
+
+            enqueue(builder)
         }
     }
 }
@@ -693,15 +701,15 @@ fun ImageView.loadImage(file: FileUrl?, width: Int = 0, height: Int = 0) {
 fun ImageView.loadLocalImage(file: File?, size: Int = 0) {
     if (file?.exists() == true) {
         tryWith {
-            load(file) {
-                crossfade(true)
-                if (size > 0) {
-                    scale(Scale.FILL)
-                    size(size, size)
-                }
-                memoryCachePolicy(CachePolicy.ENABLED)
-                diskCachePolicy(CachePolicy.ENABLED)
+            val builder = ImageRequest.Builder(context)
+                .data(file)
+                .crossfade(true)
+
+            if (size > 0) {
+                builder.size(size)
             }
+
+            enqueue(builder)
         }
     }
 }
