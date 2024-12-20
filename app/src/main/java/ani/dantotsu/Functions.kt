@@ -164,6 +164,8 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
+import coil3.request.CachePolicy
+import coil3.transform.RoundedCornersTransformation
 import coil3.Image
 import coil3.asDrawable
 import coil3.imageLoader
@@ -644,15 +646,18 @@ fun String.findBetween(a: String, b: String): String? {
       file?.url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { file?.url ?: "" }
       if (file?.url?.isNotEmpty() == true) {
           tryWith {
-              load(if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url) {
+              val imageUrl = if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url
+              load(imageUrl) {
                   crossfade(true)
-                  if (size > 0) size(size)
+                  if (size > 0) {
+                      scale(coil3.size.Scale.FILL)
+                      size(size, size)
+                  }
                   if (!file.url.startsWith("content://")) {
-                      headers(Headers.Builder().apply {
-                          file.headers.forEach { (key, value) ->
-                              add(key, value)
-                          }
-                      }.build())
+                      // Set headers using Coil's request builder
+                      file.headers.forEach { (key, value) ->
+                          addHeader(key, value)
+                      }
                   }
                   memoryCachePolicy(CachePolicy.ENABLED)
                   diskCachePolicy(CachePolicy.ENABLED)
@@ -665,15 +670,18 @@ fun String.findBetween(a: String, b: String): String? {
       file?.url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { file?.url ?: "" }
       if (file?.url?.isNotEmpty() == true) {
           tryWith {
-              load(if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url) {
+              val imageUrl = if (file.url.startsWith("content://")) Uri.parse(file.url) else file.url
+              load(imageUrl) {
                   crossfade(true)
-                  if (width > 0 && height > 0) size(width, height)
+                  if (width > 0 && height > 0) {
+                      scale(coil3.size.Scale.FILL)
+                      size(width, height)
+                  }
                   if (!file.url.startsWith("content://")) {
-                      headers(Headers.Builder().apply {
-                          file.headers.forEach { (key, value) ->
-                              add(key, value)
-                          }
-                      }.build())
+                      // Set headers using Coil's request builder
+                      file.headers.forEach { (key, value) ->
+                          addHeader(key, value)
+                      }
                   }
                   memoryCachePolicy(CachePolicy.ENABLED)
                   diskCachePolicy(CachePolicy.ENABLED)
@@ -687,7 +695,10 @@ fun String.findBetween(a: String, b: String): String? {
           tryWith {
               load(file) {
                   crossfade(true)
-                  if (size > 0) size(size)
+                  if (size > 0) {
+                      scale(coil3.size.Scale.FILL)
+                      size(size, size)
+                  }
                   memoryCachePolicy(CachePolicy.ENABLED)
                   diskCachePolicy(CachePolicy.ENABLED)
               }
