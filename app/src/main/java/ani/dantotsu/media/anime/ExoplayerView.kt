@@ -156,8 +156,8 @@ import ani.dantotsu.toPx
 import ani.dantotsu.toast
 import ani.dantotsu.tryWithSuspend
 import ani.dantotsu.util.Logger
+import coil3.load
 import com.anggrayudi.storage.file.extension
-import com.bumptech.glide.Glide
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.common.ConnectionResult
@@ -575,15 +575,15 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                 isPlayerPlaying = exoPlayer.isPlaying
                 (exoPlay.drawable as Animatable?)?.start()
                 if (isPlayerPlaying || castPlayer?.isPlaying == true) {
-                    Glide.with(this).load(R.drawable.anim_play_to_pause).into(exoPlay)
+                    exoPlay.load(R.drawable.anim_play_to_pause)
                     exoPlayer.pause()
                     castPlayer?.pause()
                 } else {
                     if (castPlayer?.isPlaying == false && castPlayer?.currentMediaItem != null) {
-                        Glide.with(this).load(R.drawable.anim_pause_to_play).into(exoPlay)
+                        exoPlay.load(R.drawable.anim_pause_to_play)
                         castPlayer?.play()
                     } else if (!isPlayerPlaying) {
-                        Glide.with(this).load(R.drawable.anim_pause_to_play).into(exoPlay)
+                        exoPlay.load(R.drawable.anim_pause_to_play)
                         exoPlayer.play()
                     }
                 }
@@ -1905,9 +1905,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
             isPlayerPlaying = isPlaying
             playerView.keepScreenOn = isPlaying
             (exoPlay.drawable as Animatable?)?.start()
-            if (!this.isDestroyed) Glide.with(this)
-                .load(if (isPlaying) R.drawable.anim_play_to_pause else R.drawable.anim_pause_to_play)
-                .into(exoPlay)
+            if (!this.isDestroyed) exoPlay.load(if (isPlaying) R.drawable.anim_play_to_pause else R.drawable.anim_pause_to_play)
         }
     }
 
@@ -2372,14 +2370,10 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                 super.onPlayWhenReadyChanged(playWhenReady, reason)
                 if (playWhenReady) {
                     (exoPlay.drawable as Animatable?)?.start()
-                    Glide.with(this@ExoplayerView)
-                        .load(R.drawable.anim_play_to_pause)
-                        .into(exoPlay)
+                    exoPlay.load(R.drawable.anim_play_to_pause)
                 } else {
                     (exoPlay.drawable as Animatable?)?.start()
-                    Glide.with(this@ExoplayerView)
-                        .load(R.drawable.anim_pause_to_play)
-                        .into(exoPlay)
+                    exoPlay.load(R.drawable.anim_pause_to_play)
                 }
             }
         })
