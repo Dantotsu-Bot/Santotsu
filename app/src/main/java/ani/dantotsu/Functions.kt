@@ -164,11 +164,22 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
+import coil3.Image
+import coil3.asDrawable
+import coil3.imageLoader
 import coil3.load
-import coil3.request.CachePolicy
+import coil3.network.NetworkHeaders
+import coil3.network.httpHeaders
+import coil3.request.ImageRequest
 import coil3.request.crossfade
-import coil3.request.size
-import coil3.transform.RoundedCornersTransformation
+import coil3.request.error
+import coil3.request.placeholder
+import coil3.request.target
+import coil3.request.transformations
+import coil3.target.GenericViewTarget
+import coil3.toBitmap
+import coil3.transform.CircleCropTransformation
+import coil3.transform.Transformation
 
 var statusBarHeight = 0
 var navBarHeight = 0
