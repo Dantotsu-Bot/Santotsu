@@ -155,7 +155,7 @@ import coil3.request.CachePolicy
 import coil3.transform.RoundedCornersTransformation
 import coil3.Image
 import coil3.asDrawable
-import coil3.imageLoader
+import coil.imageLoader
 import coil3.load
 import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
@@ -1481,46 +1481,49 @@ fun buildMarkwon(
     fragment: Fragment? = null,
     anilist: Boolean = false
 ): Markwon {
-val imageLoader = (activity.applicationContext as App).newImageLoader(activity)
+    val imageLoader = (activity.applicationContext as App).newImageLoader(activity)
 
-val markwon = Markwon.builder(activity)
-    .usePlugin(object : AbstractMarkwonPlugin() {
-        override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-            builder.linkResolver { _, link ->
-                openOrCopyAnilistLink(link)
-            }
-        }
-    })
-    .usePlugin(SoftBreakAddsNewLinePlugin.create())
-    .usePlugin(StrikethroughPlugin.create())
-    .usePlugin(TablePlugin.create(activity))
-    .usePlugin(TaskListPlugin.create(activity))
-    .usePlugin(SpoilerPlugin(anilist))
-    .usePlugin(HtmlPlugin.create { plugin ->
-        if (userInputContent) {
-            plugin.addHandler(
-                TagHandlerNoOp.create("h1", "h2", "h3", "h4", "h5", "h6", "hr", "pre", "a")
-            )
-        }
-        plugin.addHandler(AlignTagHandler())
-    })
-    .usePlugin(
-        CoilImagesPlugin.create(
-            object : CoilImagesPlugin.CoilStore {
-                override fun load(drawable: AsyncDrawable): coil.request.ImageRequest =
-                    ImageRequest.Builder(activity)
-                        .data(drawable.destination)
-                        .crossfade(true)
-                        .build()
-
-                override fun cancel(disposable: Disposable) {
-                    disposable.dispose()
+    val markwon = Markwon.builder(activity)
+        .usePlugin(object : AbstractMarkwonPlugin() {
+            override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
+                builder.linkResolver { _, link ->
+                    openOrCopyAnilistLink(link)
                 }
-            },
-            imageLoader
+            }
+        })
+        .usePlugin(SoftBreakAddsNewLinePlugin.create())
+        .usePlugin(StrikethroughPlugin.create())
+        .usePlugin(TablePlugin.create(activity))
+        .usePlugin(TaskListPlugin.create(activity))
+        .usePlugin(SpoilerPlugin(anilist))
+        .usePlugin(HtmlPlugin.create { plugin ->
+            if (userInputContent) {
+                plugin.addHandler(
+                    TagHandlerNoOp.create("h1", "h2", "h3", "h4", "h5", "h6", "hr", "pre", "a")
+                )
+            }
+            plugin.addHandler(AlignTagHandler())
+        })
+        .usePlugin(
+            CoilImagesPlugin.create(
+                object : CoilImagesPlugin.CoilStore {
+                    override fun load(drawable: AsyncDrawable): ImageRequest =
+                        // Ensure you are using the correct package for ImageRequest
+                        ImageRequest.Builder(activity)
+                            .data(drawable.destination)
+                            .crossfade(true)
+                            .build()
+
+                    override fun cancel(disposable: Disposable) {
+                        // Ensure you are using the correct method to cancel the request
+                        disposable.dispose()
+                    }
+                },
+                imageLoader
+            )
         )
-    )
-    .build()
+        .build()
+
     return markwon
 }
 
