@@ -103,6 +103,10 @@ dependencies {
     implementation "com.anggrayudi:storage:1.5.5"
     implementation "androidx.biometric:biometric:1.1.0"
 
+//Coil
+    ext.coil_version = '3.0.0-rc01'
+    implementation "io.coil-kt.coil3:coil:$coil_verison"
+    implementation "io.coil-kt.coil3:coil-network-okhttp:$coil_verison"
 
 //  Glide
     ext.glide_version = '4.16.0'

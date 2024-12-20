@@ -164,6 +164,24 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
+import coil3.request.CachePolicy
+import coil3.transform.RoundedCornersTransformation
+import coil3.Image
+import coil3.asDrawable
+import coil3.imageLoader
+import coil3.load
+import coil3.network.NetworkHeaders
+import coil3.network.httpHeaders
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.request.error
+import coil3.request.placeholder
+import coil3.request.target
+import coil3.request.transformations
+import coil3.target.GenericViewTarget
+import coil3.toBitmap
+import coil3.transform.CircleCropTransformation
+import coil3.transform.Transformation
 
 var statusBarHeight = 0
 var navBarHeight = 0
@@ -629,12 +647,20 @@ fun ImageView.loadImage(file: FileUrl?, size: Int = 0) {
     if (file?.url?.isNotEmpty() == true) {
         tryWith {
             if (file.url.startsWith("content://")) {
-                Glide.with(this.context).load(Uri.parse(file.url)).transition(withCrossFade())
-                    .override(size).into(this)
+                load(Uri.parse(file.url)) {
+                    crossfade(true)
+                    if (size > 0) size(size)
+                }
             } else {
-                val glideUrl = GlideUrl(file.url) { file.headers }
-                Glide.with(this.context).load(glideUrl).transition(withCrossFade()).override(size)
-                    .into(this)
+                load(file.url) {
+                    crossfade(true)
+                    if (size > 0) size(size)
+                    httpHeaders(NetworkHeaders.Builder().apply {
+                        file.headers.forEach { (key, value) ->
+                            add(key, value)
+                        }
+                    }.build())
+                }
             }
         }
     }
@@ -645,24 +671,32 @@ fun ImageView.loadImage(file: FileUrl?, width: Int = 0, height: Int = 0) {
     if (file?.url?.isNotEmpty() == true) {
         tryWith {
             if (file.url.startsWith("content://")) {
-                Glide.with(this.context).load(Uri.parse(file.url)).transition(withCrossFade())
-                    .override(width, height).into(this)
+                load(Uri.parse(file.url)) {
+                    crossfade(true)
+                    if (width > 0 && height > 0) size(width, height)
+                }
             } else {
-                val glideUrl = GlideUrl(file.url) { file.headers }
-                Glide.with(this.context).load(glideUrl).transition(withCrossFade())
-                    .override(width, height)
-                    .into(this)
+                load(file.url) {
+                    crossfade(true)
+                    if (width > 0 && height > 0) size(width, height)
+                    httpHeaders(NetworkHeaders.Builder().apply {
+                        file.headers.forEach { (key, value) ->
+                            add(key, value)
+                        }
+                    }.build())
+                }
             }
         }
     }
 }
 
-
 fun ImageView.loadLocalImage(file: File?, size: Int = 0) {
     if (file?.exists() == true) {
         tryWith {
-            Glide.with(this.context).load(file).transition(withCrossFade()).override(size)
-                .into(this)
+            load(file) {
+                crossfade(true)
+                if (size > 0) size(size)
+            }
         }
     }
 }
