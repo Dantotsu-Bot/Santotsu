@@ -1504,30 +1504,9 @@ val markwon = Markwon.builder(activity)
         }
         plugin.addHandler(AlignTagHandler())
     })
-    .usePlugin(CoilImagesPlugin.create(
-        object : CoilImagesPlugin.CoilStore {
-            override fun load(drawable: AsyncDrawable): ImageRequest {
-                Logger.log("Loading image: ${drawable.destination}")
-                return ImageRequest.Builder(activity)
-                    .data(drawable.destination)
-                    .crossfade(true)
-                    .listener(
-                        onError = { _, throwable ->
-                            Logger.log("Image failed to load: ${drawable.destination}")
-                            Logger.log(throwable as Exception)
-                        }
-                    )
-                    .build()
-            }
-
-            override fun cancel(disposable: Disposable) {
-                disposable.dispose()
-            }
-        },
-        imageLoader
-    ))
+    .usePlugin(CoilImagesPlugin.create(activity, imageLoader))
     .build()
-  return markwon
+    return markwon
 }
 
 
