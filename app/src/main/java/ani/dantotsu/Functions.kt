@@ -155,7 +155,7 @@ import coil3.request.CachePolicy
 import coil3.transform.RoundedCornersTransformation
 import coil3.Image
 import coil3.asDrawable
-import coil.imageLoader
+import coil3.imageLoader
 import coil3.load
 import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
@@ -1482,7 +1482,6 @@ fun buildMarkwon(
     anilist: Boolean = false
 ): Markwon {
     val imageLoader = (activity.applicationContext as App).newImageLoader(activity)
-
     val markwon = Markwon.builder(activity)
         .usePlugin(object : AbstractMarkwonPlugin() {
             override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
@@ -1504,29 +1503,21 @@ fun buildMarkwon(
             }
             plugin.addHandler(AlignTagHandler())
         })
-        .usePlugin(
-            CoilImagesPlugin.create(
-                object : CoilImagesPlugin.CoilStore {
-                    override fun load(drawable: AsyncDrawable): ImageRequest =
-                        // Ensure you are using the correct package for ImageRequest
-                        ImageRequest.Builder(activity)
-                            .data(drawable.destination)
-                            .crossfade(true)
-                            .build()
+        .usePlugin(CoilImagesPlugin.create(object : CoilImagesPlugin.CoilStore {
+            override fun load(drawable: AsyncDrawable): ImageRequest {
+                return ImageRequest.Builder(activity)
+                    .data(drawable.destination)
+                    .crossfade(true)
+                    .build()
+            }
 
-                    override fun cancel(disposable: Disposable) {
-                        // Ensure you are using the correct method to cancel the request
-                        disposable.dispose()
-                    }
-                },
-                imageLoader
-            )
-        )
+            override fun cancel(disposable: Disposable) {
+                disposable.dispose()
+            }
+        }, imageLoader))
         .build()
-
     return markwon
 }
-
 
 
 fun getYoutubeId(url: String): String {
