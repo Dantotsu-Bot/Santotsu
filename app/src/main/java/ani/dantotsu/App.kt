@@ -166,7 +166,7 @@ class App : MultiDexApplication(), SingletonImageLoader.Factory {
             .diskCache {
                 DiskCache.Builder()
                     .directory(context.cacheDir.resolve("image_cache"))
-                    .maxSizeBytes(1024L * 1024L * 100L) // 100MB
+                    .maxSizeBytes(1024 * 1024 * 100) // 100MB
                     .build()
             }
             .allowHardware(false)
