@@ -164,6 +164,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
+import ani.dantotsu.util.BlurTransformation
 import coil3.request.CachePolicy
 import coil3.transform.RoundedCornersTransformation
 import coil3.Image
@@ -1400,31 +1401,30 @@ suspend fun View.pop() {
 
 fun blurImage(imageView: ImageView, banner: String?) {
     if (banner != null) {
-        val radius = PrefManager.getVal<Float>(PrefName.BlurRadius).toInt()
-        val sampling = PrefManager.getVal<Float>(PrefName.BlurSampling).toInt()
+        val radius = PrefManager.getVal<Float>(PrefName.BlurRadius)
+        val sampling = PrefManager.getVal<Float>(PrefName.BlurSampling)
         val context = imageView.context
         if (!(context as Activity).isDestroyed) {
             val url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { banner }
-            if (PrefManager.getVal(PrefName.BlurBanners)) {
-                Glide.with(context as Context)
-                    .load(
-                        if (banner.startsWith("http")) GlideUrl(url) else if (banner.startsWith("content://")) Uri.parse(
-                            url
-                        ) else File(url)
-                    )
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE).override(400)
-                    .apply(RequestOptions.bitmapTransform(BlurTransformation(radius, sampling)))
-                    .into(imageView)
+            val data = when {
+                banner.startsWith("http") -> url
+                banner.startsWith("content://") -> Uri.parse(url)
+                else -> File(url)
+            }
 
-            } else {
-                Glide.with(context as Context)
-                    .load(
-                        if (banner.startsWith("http")) GlideUrl(url) else if (banner.startsWith("content://")) Uri.parse(
-                            url
-                        ) else File(url)
-                    )
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE).override(400)
-                    .into(imageView)
+            imageView.load(data) {
+                crossfade(true)
+                size(400)
+                scale(Scale.FILL)
+                
+                if (PrefManager.getVal(PrefName.BlurBanners)) {
+                    transformations(BlurTransformation(context, radius, sampling))
+                }
+                
+                if (banner.startsWith("http")) {
+                    httpHeaders(NetworkHeaders.Builder().apply {
+                    }.build())
+                }
             }
         }
     } else {
