@@ -138,7 +138,7 @@ import io.noties.markwon.ext.tasklist.TaskListPlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.html.TagHandlerNoOp
 import io.noties.markwon.image.AsyncDrawable
-import io.noties.markwon.image.glide.GlideImagesPlugin
+import io.noties.markwon.image.coil.CoilImagesPlugin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -1405,27 +1405,17 @@ fun blurImage(imageView: ImageView, banner: String?) {
         val context = imageView.context
         if (!(context as Activity).isDestroyed) {
             val url = PrefManager.getVal<String>(PrefName.ImageUrl).ifEmpty { banner }
-            
-            // Determine the data source
             val data = when {
                 banner.startsWith("http") -> url
                 banner.startsWith("content://") -> Uri.parse(url)
                 else -> File(url)
             }
-
             imageView.load(data) {
                 crossfade(true)
                 size(400)
                 
                 if (PrefManager.getVal(PrefName.BlurBanners)) {
                     transformations(BlurTransformation(context, radius, sampling))
-                }
-                
-                // If loading from URL with headers
-                if (banner.startsWith("http")) {
-                    httpHeaders(NetworkHeaders.Builder().apply {
-                        // Add your headers here if needed
-                    }.build())
                 }
             }
         }
@@ -1503,7 +1493,18 @@ fun buildMarkwon(
     fragment: Fragment? = null,
     anilist: Boolean = false
 ): Markwon {
-    val glideContext = fragment?.let { Glide.with(it) } ?: Glide.with(activity)
+    val coilPlugin: CoilImagesPlugin
+      get() = CoilImagesPlugin.create(context, imageLoader)
+
+    val imageLoader: ImageLoader
+      get() = ImageLoader.Builder(context)
+        .apply {
+          availableMemoryPercentage(0.5)
+          bitmapPoolPercentage(0.5)
+          crossfade(true)
+        }
+        .build()
+
     val markwon = Markwon.builder(activity)
         .usePlugin(object : AbstractMarkwonPlugin() {
             override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
@@ -1526,45 +1527,7 @@ fun buildMarkwon(
             }
             plugin.addHandler(AlignTagHandler())
         })
-        .usePlugin(GlideImagesPlugin.create(object : GlideImagesPlugin.GlideStore {
-
-            private val requestManager: RequestManager = glideContext.apply {
-                addDefaultRequestListener(object : RequestListener<Any> {
-                    override fun onResourceReady(
-                        resource: Any,
-                        model: Any,
-                        target: Target<Any>,
-                        dataSource: DataSource,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        if (resource is GifDrawable) {
-                            resource.start()
-                        }
-                        return false
-                    }
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Any>,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Logger.log("Image failed to load: $model")
-                        Logger.log(e as Exception)
-                        return false
-                    }
-                })
-            }
-
-            override fun load(drawable: AsyncDrawable): RequestBuilder<Drawable> {
-                Logger.log("Loading image: ${drawable.destination}")
-                return requestManager.load(drawable.destination)
-            }
-
-            override fun cancel(target: Target<*>) {
-                Logger.log("Cancelling image load")
-                requestManager.clear(target)
-            }
-        }))
+        .usePlugin(coilPlugin)
         .build()
     return markwon
 }

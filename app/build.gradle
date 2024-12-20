@@ -107,7 +107,6 @@ dependencies {
     ext.coil_version = '3.0.0-rc01'
     implementation "io.coil-kt.coil3:coil:$coil_version"
     implementation "io.coil-kt.coil3:coil-network-okhttp:$coil_version"
-    implementation 'jp.wasabeef.transformers:coil:1.0.6'
 
 //  Glide
     ext.glide_version = '4.16.0'
@@ -150,7 +149,7 @@ dependencies {
     implementation "io.noties.markwon:ext-tables:$markwon_version"
     implementation "io.noties.markwon:ext-tasklist:$markwon_version"
     implementation "io.noties.markwon:html:$markwon_version"
-    implementation "io.noties.markwon:image-glide:$markwon_version"
+    implementation "io.noties.markwon:image-coil:$markwon_version"
 
 //  Groupie
     ext.groupie_version = '2.10.1'
