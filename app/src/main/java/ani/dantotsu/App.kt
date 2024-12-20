@@ -3,6 +3,7 @@ package ani.dantotsu
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.multidex.MultiDex
@@ -159,6 +160,7 @@ class App : MultiDexApplication(), SingletonImageLoader.Factory {
     }
 
     override fun newImageLoader(context: Context): ImageLoader {
+        val isHardwareBitmapSupported: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
         return ImageLoader.Builder(context)
             .memoryCache {
                 MemoryCache.Builder()
@@ -171,8 +173,7 @@ class App : MultiDexApplication(), SingletonImageLoader.Factory {
                     .maxSizeBytes(1024 * 1024 * 100) // 100MB
                     .build()
             }
-            .allowHardware(false)
-            .crossfade(true)
+            .allowHardware(isHardwareBitmapSupported)
             .build()
     }
 
