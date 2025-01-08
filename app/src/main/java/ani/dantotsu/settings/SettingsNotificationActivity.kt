@@ -196,7 +196,8 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                     TaskScheduler.create(
                                         context, PrefManager.getVal(PrefName.UseAlarmManager)
                                     ).scheduleAllTasks(context)
-                                }show()
+                                }
+                                show()
                             }
                         }
                     ),
