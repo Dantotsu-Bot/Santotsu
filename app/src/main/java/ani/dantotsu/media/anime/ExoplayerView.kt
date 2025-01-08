@@ -1221,7 +1221,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                     curSpeed = i
                     playbackParameters = PlaybackParameters(speed)
                     exoPlayer.playbackParameters = playbackParameters
-                    dialog.dismiss()
                     hideSystemBars()
                 }
                     setOnCancelListener { hideSystemBars() }
