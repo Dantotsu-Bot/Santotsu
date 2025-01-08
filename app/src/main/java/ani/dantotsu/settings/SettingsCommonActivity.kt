@@ -254,23 +254,24 @@ class SettingsCommonActivity : AppCompatActivity() {
                             val selectedArray = mutableListOf(false)
                             val filteredLocations = Location.entries.filter { it.exportable }
                             selectedArray.addAll(List(filteredLocations.size - 1) { false })
-                            val dialog = AlertDialog.Builder(context, R.style.MyPopup)
-                                .setTitle(R.string.backup_restore).setMultiChoiceItems(
+                            context.customAlertDialog().apply{
+                                setTitle(R.string.backup_restore)
+                                multiChoiceItems(
                                     filteredLocations.map { it.name }.toTypedArray(),
                                     selectedArray.toBooleanArray()
-                                ) { _, which, isChecked ->
+                                ) { which, isChecked ->
                                     selectedArray[which] = isChecked
-                                }.setPositiveButton(R.string.button_restore) { dialog, _ ->
+                                }
+                                 setPosButton(R.string.button_restore) {
                                     openDocumentLauncher.launch(arrayOf("*/*"))
-                                    dialog.dismiss()
-                                }.setNegativeButton(R.string.button_backup) { dialog, _ ->
+                                }
+                                 setNegButton(R.string.button_backup) {
                                     if (!selectedArray.contains(true)) {
                                         toast(R.string.no_location_selected)
-                                        return@setNegativeButton
+                                        return@setNegButton
                                     }
-                                    dialog.dismiss()
                                     val selected =
-                                        filteredLocations.filterIndexed { index, _ -> selectedArray[index] }
+                                        filteredLocations.filterIndexed { index -> selectedArray[index] }
                                     if (selected.contains(Location.Protected)) {
                                         passwordAlertDialog(true) { password ->
                                             if (password != null) {
@@ -292,11 +293,10 @@ class SettingsCommonActivity : AppCompatActivity() {
                                             null
                                         )
                                     }
-                                }.setNeutralButton(R.string.cancel) { dialog, _ ->
-                                    dialog.dismiss()
-                                }.create()
-                            dialog.window?.setDimAmount(0.8f)
-                            dialog.show()
+                                }
+                                setNeutralButton(R.string.cancel) {}
+                            show()
+                          }
                         },
                     ),
                     Settings(
@@ -469,7 +469,9 @@ class SettingsCommonActivity : AppCompatActivity() {
             getString(R.string.enter_password_to_decrypt_file)
 
 
-        dialog.window?.setDimAmount(0.8f)
+        dialog.window?.apply {
+        setDimAmount(0.8f)
+        attributes.windowAnimations = android.R.style.Animation_Dialog
         dialog.show()
 
         // Override the positive button here
