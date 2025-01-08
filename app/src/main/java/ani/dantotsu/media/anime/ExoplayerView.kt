@@ -1211,11 +1211,10 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
 
         playbackParameters = PlaybackParameters(speeds[curSpeed])
         var speed: Float
-        val speedDialog =
-            AlertDialog.Builder(this, R.style.MyPopup).setTitle(getString(R.string.speed))
         exoSpeed.setOnClickListener {
-            val dialog = speedDialog.setSingleChoiceItems(speedsName, curSpeed) { dialog, i ->
-                if (isInitialized) {
+                customAlertDialog().apply {
+                    setTitle(R.string.speed)
+                    singleChoiceItems(speedsName, curSpeed) { i ->
                     PrefManager.setCustomVal("${media.id}_speed", i)
                     speed = speeds[i]
                     curSpeed = i
@@ -1224,10 +1223,10 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                     dialog.dismiss()
                     hideSystemBars()
                 }
-            }.show()
-            dialog.window?.setDimAmount(0.8f)
+                    setOnCancelListener { hideSystemBars() }
+                    show()
+                }
         }
-        speedDialog.setOnCancelListener { hideSystemBars() }
 
         if (PrefManager.getVal(PrefName.AutoPlay)) {
             var touchTimer = Timer()
