@@ -227,7 +227,7 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                 context.customAlertDialog().apply {
                                      setTitle(R.string.use_alarm_manager)
                                      setMessage(R.string.use_alarm_manager_confirm)
-                                     setPosButton(R.string.use) {. _ ->
+                                     setPosButton(R.string.use) {
                                         PrefManager.setVal(PrefName.UseAlarmManager, true)
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                                             if (!(getSystemService(Context.ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()) {
@@ -238,7 +238,7 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                             }
                                         }
                                     }
-                                    setNegButton(R.string.cancel) {  _ ->
+                                    setNegButton(R.string.cancel) {
                                         view.settingsButton.isChecked = false
                                         PrefManager.setVal(PrefName.UseAlarmManager, false)
                                     }
