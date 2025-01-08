@@ -121,7 +121,7 @@ class SettingsNotificationActivity : AppCompatActivity() {
                             val selected = types.map { filteredTypes.contains(it) }.toBooleanArray()
                             context.customAlertDialog().apply {
                                  setTitle(R.string.anilist_notification_filters)
-                                 setMultiChoiceItems(
+                                 multiChoiceItems(
                                     types.map { name ->
                                         name.replace("_", " ").lowercase().replaceFirstChar {
                                         if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
