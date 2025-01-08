@@ -251,18 +251,15 @@ class SettingsCommonActivity : AppCompatActivity() {
                         icon = R.drawable.backup_restore,
                         onClick = {
                             StoragePermissions.downloadsPermission(context)
-                            val selectedArray = mutableListOf(false)
                             val filteredLocations = Location.entries.filter { it.exportable }
-                            selectedArray.addAll(List(filteredLocations.size - 1) { false })
+                            val selectedArray = BooleanArray(filteredLocations.size) { false }
                             context.customAlertDialog().apply{
                                 setTitle(R.string.backup_restore)
                                 multiChoiceItems(
                                     filteredLocations.map { it.name }.toTypedArray(),
-                                    selectedArray.toBooleanArray()
-                                ) { which, isChecked ->
-                                    selectedArray[which] = isChecked
-                                }
-                                 setPosButton(R.string.button_restore) {
+                                    selectedArray
+                                )
+                                setPosButton(R.string.button_restore) {
                                     openDocumentLauncher.launch(arrayOf("*/*"))
                                 }
                                  setNegButton(R.string.button_backup) {
@@ -271,7 +268,7 @@ class SettingsCommonActivity : AppCompatActivity() {
                                         return@setNegButton
                                     }
                                     val selected =
-                                        filteredLocations.filterIndexed { index -> selectedArray[index] }
+                                        filteredLocations.filterIndexed { index, _ -> selectedArray[index] }
                                     if (selected.contains(Location.Protected)) {
                                         passwordAlertDialog(true) { password ->
                                             if (password != null) {
@@ -472,6 +469,7 @@ class SettingsCommonActivity : AppCompatActivity() {
         dialog.window?.apply {
         setDimAmount(0.8f)
         attributes.windowAnimations = android.R.style.Animation_Dialog
+        }
         dialog.show()
 
         // Override the positive button here
