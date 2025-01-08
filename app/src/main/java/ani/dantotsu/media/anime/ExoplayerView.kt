@@ -1213,7 +1213,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
         playbackParameters = PlaybackParameters(speeds[curSpeed])
         var speed: Float
         exoSpeed.setOnClickListener {
-                customAlertDialog().apply {
+                context.customAlertDialog().apply {
                     setTitle(R.string.speed)
                     singleChoiceItems(speedsName, curSpeed) { i ->
                     PrefManager.setCustomVal("${media.id}_speed", i)
@@ -1268,12 +1268,11 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                 PrefName.UpdateForHPlayer
             ) else true
         ) {
-            AlertDialog.Builder(this, R.style.MyPopup)
-                .setTitle(getString(R.string.auto_update, media.userPreferredName))
-                .apply {
-                    setOnCancelListener { hideSystemBars() }
+                customAlertDialog().apply {
+                    setTitle(R.string.auto_update, media.userPreferredName)
+                    setCustomView(dialogView)
                     setCancelable(false)
-                    setPositiveButton(getString(R.string.yes)) { dialog, _ ->
+                    setPosButton(R.string.yes) {
                         PrefManager.setCustomVal(
                             "${media.id}_ProgressDialog",
                             false
@@ -1282,10 +1281,9 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                             "${media.id}_save_progress",
                             true
                         )
-                        dialog.dismiss()
                         model.setEpisode(episodes[media.anime!!.selectedEpisode!!]!!, "invoke")
                     }
-                    setNegativeButton(getString(R.string.no)) { dialog, _ ->
+                    setNegButton(R.string.no) {
                         PrefManager.setCustomVal(
                             "${media.id}_ProgressDialog",
                             false
@@ -1295,12 +1293,12 @@ class ExoplayerView : AppCompatActivity(), Player.Listener, SessionAvailabilityL
                             false
                         )
                         toast(getString(R.string.reset_auto_update))
-                        dialog.dismiss()
                         model.setEpisode(episodes[media.anime!!.selectedEpisode!!]!!, "invoke")
                     }
+                    setOnCancelListener { hideSystemBars() }
                     show()
                 }
-        } else model.setEpisode(episodes[media.anime!!.selectedEpisode!!]!!, "invoke")
+         } else model.setEpisode(episodes[media.anime!!.selectedEpisode!!]!!, "invoke")
 
         //Start the recursive Fun
         if (PrefManager.getVal(PrefName.TimeStampsEnabled))
