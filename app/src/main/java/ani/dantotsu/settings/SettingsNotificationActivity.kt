@@ -225,10 +225,10 @@ class SettingsNotificationActivity : AppCompatActivity() {
                         isChecked = PrefManager.getVal(PrefName.UseAlarmManager),
                         switch = { isChecked, view ->
                             if (isChecked) {
-                                val alertDialog = AlertDialog.Builder(context, R.style.MyPopup)
-                                    .setTitle(R.string.use_alarm_manager)
-                                    .setMessage(R.string.use_alarm_manager_confirm)
-                                    .setPositiveButton(R.string.use) { dialog, _ ->
+                                context.customAlertDialog().apply {
+                                     setTitle(R.string.use_alarm_manager)
+                                     setMessage(R.string.use_alarm_manager_confirm)
+                                     setPosButton(R.string.use) {. _ ->
                                         PrefManager.setVal(PrefName.UseAlarmManager, true)
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                                             if (!(getSystemService(Context.ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()) {
@@ -238,15 +238,12 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                                 view.settingsButton.isChecked = true
                                             }
                                         }
-                                        dialog.dismiss()
-                                    }.setNegativeButton(R.string.cancel) { dialog, _ ->
+                                    }
+                                    setNegButton(R.string.cancel) {  _ ->
                                         view.settingsButton.isChecked = false
                                         PrefManager.setVal(PrefName.UseAlarmManager, false)
-
-                                        dialog.dismiss()
-                                    }.create()
-                                alertDialog.window?.setDimAmount(0.8f)
-                                alertDialog.show()
+                                    }
+                                    show()
                             } else {
                                 PrefManager.setVal(PrefName.UseAlarmManager, false)
                                 TaskScheduler.create(context, true).cancelAllTasks()
