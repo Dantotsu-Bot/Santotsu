@@ -120,7 +120,6 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                     .toMutableSet()
                             val selected = types.map { filteredTypes.contains(it) }.toBooleanArray()
                             context.customAlertDialog().apply {
-                            
                                  setTitle(R.string.anilist_notification_filters)
                                  multiChoiceItems(
                                     types.map { name ->
@@ -249,6 +248,7 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                 TaskScheduler.create(context, true).cancelAllTasks()
                                 TaskScheduler.create(context, false)
                                     .scheduleAllTasks(context)
+                                }
                             }
                         },
                     ),
