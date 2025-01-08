@@ -1852,23 +1852,18 @@ class ExoplayerView :
                             ),
                         ),
                 )
-            val dialog =
-                AlertDialog
-                    .Builder(this, R.style.MyPopup)
-                    .setTitle(getString(R.string.continue_from, time))
-                    .apply {
-                        setCancelable(false)
-                        setPositiveButton(getString(R.string.yes)) { d, _ ->
-                            buildExoplayer()
-                            d.dismiss()
-                        }
-                        setNegativeButton(getString(R.string.no)) { d, _ ->
-                            playbackPosition = 0L
-                            buildExoplayer()
-                            d.dismiss()
-                        }
-                    }.show()
-            dialog.window?.setDimAmount(0.8f)
+                customAlertDialog().apply {
+                    setTitle(getString(R.string.continue_from, time))
+                    setCancelable(false)
+                    setPosButton(getString(R.string.yes)) {
+                        buildExoplayer()
+                    }
+                    setNegButton(getString(R.string.no)) {
+                        playbackPosition = 0L
+                        buildExoplayer()
+                    }
+                    show()
+                }
         } else {
             buildExoplayer()
         }
