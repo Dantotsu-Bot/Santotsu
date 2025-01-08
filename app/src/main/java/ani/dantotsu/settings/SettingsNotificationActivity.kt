@@ -243,12 +243,12 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                         PrefManager.setVal(PrefName.UseAlarmManager, false)
                                     }
                                     show()
+                                }
                             } else {
                                 PrefManager.setVal(PrefName.UseAlarmManager, false)
                                 TaskScheduler.create(context, true).cancelAllTasks()
                                 TaskScheduler.create(context, false)
                                     .scheduleAllTasks(context)
-                                }
                             }
                         },
                     ),
