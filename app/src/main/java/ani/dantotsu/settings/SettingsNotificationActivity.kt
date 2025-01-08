@@ -138,7 +138,7 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                 }
                             show()
                         }
-
+                    }
 
                     ),
                     Settings(
