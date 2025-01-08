@@ -119,9 +119,9 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                 PrefManager.getVal<Set<String>>(PrefName.AnilistFilteredTypes)
                                     .toMutableSet()
                             val selected = types.map { filteredTypes.contains(it) }.toBooleanArray()
-                            val dialog = AlertDialog.Builder(context, R.style.MyPopup)
-                                .setTitle(R.string.anilist_notification_filters)
-                                .setMultiChoiceItems(
+                            context.customAlertDialog().apply {
+                                 setTitle(R.string.anilist_notification_filters)
+                                 setMultiChoiceItems(
                                     types.map { name ->
                                         name.replace("_", " ").lowercase().replaceFirstChar {
                                         if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
@@ -135,10 +135,10 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                         filteredTypes.remove(type)
                                     }
                                     PrefManager.setVal(PrefName.AnilistFilteredTypes, filteredTypes)
-                                }.create()
-                            dialog.window?.setDimAmount(0.8f)
-                            dialog.show()
+                                }
+                            show()
                         }
+
 
                     ),
                     Settings(
