@@ -120,6 +120,7 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                     .toMutableSet()
                             val selected = types.map { filteredTypes.contains(it) }.toBooleanArray()
                             context.customAlertDialog().apply {
+                            
                                  setTitle(R.string.anilist_notification_filters)
                                  multiChoiceItems(
                                     types.map { name ->
@@ -137,9 +138,9 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                 }
                                     PrefManager.setVal(PrefName.AnilistFilteredTypes, filteredTypes)
                                 }
-                            show()
+                                show()
+                            }
                         }
-                    }
 
                     ),
                     Settings(
@@ -151,27 +152,24 @@ class SettingsNotificationActivity : AppCompatActivity() {
                         desc = getString(R.string.anilist_notifications_checking_time_desc),
                         icon = R.drawable.ic_round_notifications_none_24,
                         onClick = {
-                            val selected =
-                                PrefManager.getVal<Int>(PrefName.AnilistNotificationInterval)
-                            val dialog = AlertDialog.Builder(context, R.style.MyPopup)
-                                .setTitle(R.string.subscriptions_checking_time)
-                                .setSingleChoiceItems(
+                            context.customAlertDialog().apply {
+                                 setTitle(R.string.subscriptions_checking_time)
+                                 singleChoiceItems(
                                     aItems.toTypedArray(),
-                                    selected
-                                ) { dialog, i ->
+                                    PrefManager.getVal<Int>(PrefName.AnilistNotificationInterval)
+                                ) { i ->
                                     PrefManager.setVal(PrefName.AnilistNotificationInterval, i)
                                     it.settingsTitle.text =
                                         getString(
                                             R.string.anilist_notifications_checking_time,
                                             aItems[i]
                                         )
-                                    dialog.dismiss()
                                     TaskScheduler.create(
                                         context, PrefManager.getVal(PrefName.UseAlarmManager)
                                     ).scheduleAllTasks(context)
-                                }.create()
-                            dialog.window?.setDimAmount(0.8f)
-                            dialog.show()
+                                }
+                                show()
+                            }
                         }
                     ),
                     Settings(
@@ -183,27 +181,23 @@ class SettingsNotificationActivity : AppCompatActivity() {
                         desc = getString(R.string.comment_notification_checking_time_desc),
                         icon = R.drawable.ic_round_notifications_none_24,
                         onClick = {
-                            val selected =
-                                PrefManager.getVal<Int>(PrefName.CommentNotificationInterval)
-                            val dialog = AlertDialog.Builder(context, R.style.MyPopup)
-                                .setTitle(R.string.subscriptions_checking_time)
-                                .setSingleChoiceItems(
+                            context.customAlertDialog().apply {
+                                 setTitle(R.string.subscriptions_checking_time)
+                                 singleChoiceItems(
                                     cItems.toTypedArray(),
-                                    selected
-                                ) { dialog, i ->
+                                    PrefManager.getVal<Int>(PrefName.CommentNotificationInterval)
+                                ) {  i ->
                                     PrefManager.setVal(PrefName.CommentNotificationInterval, i)
                                     it.settingsTitle.text =
                                         getString(
                                             R.string.comment_notification_checking_time,
                                             cItems[i]
                                         )
-                                    dialog.dismiss()
                                     TaskScheduler.create(
                                         context, PrefManager.getVal(PrefName.UseAlarmManager)
                                     ).scheduleAllTasks(context)
-                                }.create()
-                            dialog.window?.setDimAmount(0.8f)
-                            dialog.show()
+                                }show()
+                            }
                         }
                     ),
                     Settings(
