@@ -127,13 +127,14 @@ class SettingsNotificationActivity : AppCompatActivity() {
                                         if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
                                     } }.toTypedArray(),
                                     selected
-                                ) { _, which, isChecked ->
-                                    val type = types[which]
-                                    if (isChecked) {
+                                ) { updatedSelected ->
+                                types.forEachIndexed { index, type ->
+                                    if (updatedSelected[index]) {
                                         filteredTypes.add(type)
                                     } else {
                                         filteredTypes.remove(type)
                                     }
+                                }
                                     PrefManager.setVal(PrefName.AnilistFilteredTypes, filteredTypes)
                                 }
                             show()
