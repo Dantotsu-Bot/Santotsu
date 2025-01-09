@@ -3,6 +3,7 @@ package ani.dantotsu.util
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.view.WindowManager
 import android.view.View
 import ani.dantotsu.R
 
