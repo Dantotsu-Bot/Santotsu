@@ -182,7 +182,9 @@ class AlertDialogBuilder(private val context: Context) {
             onShow?.invoke()
         }
         dialog.window?.apply {
+        addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
         setDimAmount(0.8f)
+        attributes.blurBehindRadius = 20
         attributes.windowAnimations = android.R.style.Animation_Dialog
         }
         dialog.show()
