@@ -3,6 +3,7 @@ package ani.dantotsu.util
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.view.WindowManager
 import android.view.View
 import ani.dantotsu.R
 
@@ -182,9 +183,14 @@ class AlertDialogBuilder(private val context: Context) {
             onShow?.invoke()
         }
         dialog.window?.apply {
-        setBackgroundBlurRadius(20)
         setDimAmount(0.8f)
         attributes.windowAnimations = android.R.style.Animation_Dialog
+
+        val params = attributes
+        params.flags = params.flags or WindowManager.LayoutParams.FLAG_BLUR_BEHIND
+        params.setBlurBehindRadius(20)
+
+        attributes = params
         }
         dialog.show()
     }
