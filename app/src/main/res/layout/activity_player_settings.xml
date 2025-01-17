@@ -1104,7 +1104,7 @@
                     android:layout_marginHorizontal="32dp"
                     android:stepSize="5.0"
                     android:value="15.0"
-                    android:valueFrom="5.0"
+                    android:valueFrom="3.0"
                     android:valueTo="45.0"
                     app:labelBehavior="floating"
                     app:labelStyle="@style/fontTooltip"

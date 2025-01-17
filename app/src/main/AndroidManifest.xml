@@ -70,7 +70,6 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="${icon_placeholder_round}"
         android:supportsRtl="true"
-        android:hardwareAccelerated="true"
         android:theme="@style/Theme.Dantotsu"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup"

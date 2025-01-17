@@ -2,6 +2,8 @@ package ani.dantotsu.others
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Build
+import android.view.WindowManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,8 +54,19 @@ open class CustomBottomDialog : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = BottomSheetCustomBinding.inflate(inflater, container, false)
+
         val window = dialog?.window
-        window?.statusBarColor = Color.TRANSPARENT
+        window?.apply {
+            statusBarColor = Color.TRANSPARENT
+            setDimAmount(0.5f)
+ 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val params = attributes
+                params.flags = params.flags or WindowManager.LayoutParams.FLAG_BLUR_BEHIND
+                params.setBlurBehindRadius(20)
+                attributes = params
+            }
+        }
         return binding.root
     }
 
