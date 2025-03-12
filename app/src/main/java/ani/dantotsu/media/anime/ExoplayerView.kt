@@ -169,8 +169,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import io.github.peerless2012.ass.ASSBuilder
-import io.github.peerless2012.ass.render.AssRenderType
+import io.github.peerless2012.ass.AssRender
+import io.github.peerless2012.ass.AssTrack
+import io.github.peerless2012.ass.Ass
+import io.github.peerless2012.ass.media.parser.AssHeaderParser
+import io.github.peerless2012.ass.media.render.AssOverlayManager
+import io.github.peerless2012.ass.media.type.AssRenderType
 import java.util.Calendar
 import java.util.Locale
 import java.util.Timer
