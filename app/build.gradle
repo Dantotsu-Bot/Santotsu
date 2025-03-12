@@ -14,7 +14,7 @@ android {
     compileSdk 35
 
     defaultConfig {
-        applicationId "tani.dantotsu"
+        applicationId "ani.dantotsu"
         minSdk 21
         targetSdk 35
         versionCode((System.currentTimeMillis() / 60000).toInteger())
@@ -50,7 +50,7 @@ android {
             isDefault true
         }
         debug {
-            applicationIdSuffix ".beta"
+            applicationIdSuffix ".bet"
             versionNameSuffix "-beta01"
             manifestPlaceholders.icon_placeholder = "@mipmap/ic_launcher_beta"
             manifestPlaceholders.icon_placeholder_round = "@mipmap/ic_launcher_beta_round"
