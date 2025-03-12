@@ -1610,10 +1610,10 @@ class ExoplayerView :
                             .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
                             .setMimeType(
                                 when (type) {
-                                    SubtitleType.VTT -> MimeTypes.TEXT_SSA
+                                    SubtitleType.VTT -> MimeTypes.TEXT_VTT
                                     SubtitleType.ASS -> MimeTypes.TEXT_SSA
-                                    SubtitleType.SRT -> MimeTypes.TEXT_SSA
-                                    else -> MimeTypes.TEXT_SSA
+                                    SubtitleType.SRT -> MimeTypes.APPLICATION_SUBRIP
+                                    else -> MimeTypes.TEXT_UNKNOWN
                                 },
                             ).setId("69")
                             .setLanguage(subtitle.language)
@@ -1625,7 +1625,7 @@ class ExoplayerView :
                 sub +=
                     MediaItem.SubtitleConfiguration
                         .Builder(subUri)
-                        .setSelectionFlags(C.SELECTION_FLAG_FORCED)
+                        .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
                         .setMimeType(
                             when (subtitle.type) {
                                 SubtitleType.VTT -> MimeTypes.TEXT_VTT
