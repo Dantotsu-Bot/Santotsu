@@ -1898,14 +1898,15 @@ class ExoplayerView :
                 .setEnableDecoderFallback(true)
                 .setExtensionRendererMode(decoder)
 
-        exoPlayer =
-            ExoPlayer
-                .Builder(this, renderersFactory)
-                .buildWithAssSupport(this, AssRenderType.OPEN_GL)
+        val exoPlayerBuilder = 
+            ExoPlayer.Builder(this, renderersFactory)
                 .setMediaSourceFactory(DefaultMediaSourceFactory(cacheFactory))
                 .setTrackSelector(trackSelector)
                 .setLoadControl(loadControl)
-                .build()
+
+        exoPlayer = 
+            exoPlayerBuilder
+                .buildWithAssSupport(this, AssRenderType.OPEN_GL)
                 .apply {
                     playWhenReady = true
                     this.playbackParameters = this@ExoplayerView.playbackParameters
