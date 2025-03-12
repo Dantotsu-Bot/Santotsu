@@ -169,6 +169,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import io.github.peerless2012.ass.ASSBuilder
+import io.github.peerless2012.ass.render.AssRenderType
 import java.util.Calendar
 import java.util.Locale
 import java.util.Timer
@@ -1899,6 +1901,7 @@ class ExoplayerView :
         exoPlayer =
             ExoPlayer
                 .Builder(this, renderersFactory)
+                .buildWithAssSupport(this, AssRenderType.OPEN_GL)
                 .setMediaSourceFactory(DefaultMediaSourceFactory(cacheFactory))
                 .setTrackSelector(trackSelector)
                 .setLoadControl(loadControl)

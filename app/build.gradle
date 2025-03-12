@@ -14,7 +14,7 @@ android {
     compileSdk 35
 
     defaultConfig {
-        applicationId "ani.dantotsu"
+        applicationId "tani.dantotsu"
         minSdk 21
         targetSdk 35
         versionCode((System.currentTimeMillis() / 60000).toInteger())
@@ -125,6 +125,7 @@ dependencies {
     implementation "androidx.mediarouter:mediarouter:1.7.0"
 // Media3 extension
     implementation "com.github.anilbeesetti.nextlib:nextlib-media3ext:0.8.4"
+    implementation "io.github.peerless2012:ass-media:0.1.1"
 
 //  UI
     implementation 'com.google.android.material:material:1.12.0'

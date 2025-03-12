@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import tachiyomi.core.preference.Preference
+import tachiyomi.core.common.preference.Preference
 
 class PreferenceMutableState<T>(
     private val preference: Preference<T>,
@@ -31,7 +31,7 @@ class PreferenceMutableState<T>(
     }
 
     override fun component2(): (T) -> Unit {
-        return { preference.set(it) }
+        return preference::set
     }
 }
 
