@@ -1615,7 +1615,7 @@ class ExoplayerView :
                                     SubtitleType.SRT -> MimeTypes.APPLICATION_SUBRIP
                                     else -> MimeTypes.TEXT_UNKNOWN
                                 },
-                            ).setId("69")
+                            ).setId("131")
                             .setLanguage(subtitle.language)
                             .build()
                 }
@@ -1633,7 +1633,7 @@ class ExoplayerView :
                                 SubtitleType.SRT -> MimeTypes.APPLICATION_SUBRIP
                                 else -> MimeTypes.TEXT_UNKNOWN
                             },
-                        ).setId("69")
+                        ).setId("130")
                         .setLanguage(subtitle.language)
                         .build()
             }
